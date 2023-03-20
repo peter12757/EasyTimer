@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.Orientation
 import com.eathemeat.easytimer.R
 import com.eathemeat.easytimer.databinding.ActivityHomeBinding
 import com.eathemeat.easytimer.databinding.FragmentHomeBinding
+import com.eathemeat.easytimer.databinding.ItemHomeListBinding
 
 class HomeFragment : Fragment() {
 
@@ -24,6 +25,7 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
 
     private lateinit var mLayoutManager:LinearLayoutManager
+    private lateinit var mAdapter:HomeListAdapter
 
 
     override fun onCreateView(
@@ -35,23 +37,27 @@ class HomeFragment : Fragment() {
 
         //recycleview
         mLayoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL,false)
-
-
+        mAdapter = HomeListAdapter()
+        binding.rvHomeList.layoutManager = mLayoutManager
+        binding.rvHomeList.adapter = mAdapter
         return binding.root
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemBinding: ItemHomeListBinding,val type:Int) : RecyclerView.ViewHolder(itemBinding.root) {
 
     }
 
     class HomeListAdapter: RecyclerView.Adapter<ViewHolder>() {
 
+
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(parent,viewType)
+            var itemBinding = ItemHomeListBinding.inflate(LayoutInflater.from(parent.context))
+            return ViewHolder(itemBinding,viewType)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            TODO("Not yet implemented")
+
         }
 
         override fun getItemCount(): Int {
