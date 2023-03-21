@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Orientation
 import com.eathemeat.easytimer.R
+import com.eathemeat.easytimer.data.DataManager
+import com.eathemeat.easytimer.data.Task
 import com.eathemeat.easytimer.databinding.ActivityHomeBinding
 import com.eathemeat.easytimer.databinding.FragmentHomeBinding
 import com.eathemeat.easytimer.databinding.ItemHomeListBinding
@@ -43,12 +45,13 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    class ViewHolder(itemBinding: ItemHomeListBinding,val type:Int) : RecyclerView.ViewHolder(itemBinding.root) {
+    class ViewHolder(val itemBinding: ItemHomeListBinding,val type:Int) : RecyclerView.ViewHolder(itemBinding.root) {
 
     }
 
-    class HomeListAdapter: RecyclerView.Adapter<ViewHolder>() {
 
+    class HomeListAdapter: RecyclerView.Adapter<ViewHolder>() {
+        var mVirualData = Task("","", mutableListOf())
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -57,11 +60,27 @@ class HomeFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            holder.itemView.setOnClickListener {
+                var task = DataManager.sIntance.mTaskList[position]
+                // TODO: 跳转详情页
+            }
+            if (position == DataManager.sIntance.mTaskList.size+1) {
+                //virual
+            }else {
+                var task = DataManager.sIntance.mTaskList[position]
+                holder.itemBinding.txtName.text = task.name
+                holder.itemBinding.txtDesc.text = task.desc
+                holder.itemBinding.btnDel.setOnClickListener {
+                    DataManager.sIntance.del(DataManager.sIntance.mTaskList[position])
+                    notifyDataSetChanged()
+                }
+            }
 
         }
 
+
         override fun getItemCount(): Int {
-            TODO("Not yet implemented")
+            return DataManager.sIntance.mTaskList.size+1 //任务列表加上一个虚拟任务
         }
 
     }
