@@ -66,8 +66,13 @@ class HomeFragment : Fragment() {
             }
             if (position == DataManager.sIntance.mTaskList.size+1) {
                 //virual
+                holder.itemBinding.clNormal.visibility = View.GONE
+                holder.itemBinding.clVirual.visibility = View.VISIBLE
+
             }else {
                 var task = DataManager.sIntance.mTaskList[position]
+                holder.itemBinding.clNormal.visibility = View.VISIBLE
+                holder.itemBinding.clVirual.visibility = View.GONE
                 holder.itemBinding.txtName.text = task.name
                 holder.itemBinding.txtDesc.text = task.desc
                 holder.itemBinding.btnDel.setOnClickListener {
