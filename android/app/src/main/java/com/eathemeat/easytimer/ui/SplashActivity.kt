@@ -30,6 +30,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun trans2HomeActivity() {
         startActivity(Intent(this,HomeActivity::class.java))
+        finish()
     }
 
 

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Orientation
@@ -64,10 +65,13 @@ class HomeFragment : Fragment() {
                 var task = DataManager.sIntance.mTaskList[position]
                 // TODO: 跳转详情页
             }
-            if (position == DataManager.sIntance.mTaskList.size+1) {
+            if (position == DataManager.sIntance.mTaskList.size) {
                 //virual
                 holder.itemBinding.clNormal.visibility = View.GONE
                 holder.itemBinding.clVirual.visibility = View.VISIBLE
+                holder.itemBinding.btnAdd.setOnClickListener {
+//                    Navigation.findNavController(holder.itemView).navigate()
+                }
 
             }else {
                 var task = DataManager.sIntance.mTaskList[position]
