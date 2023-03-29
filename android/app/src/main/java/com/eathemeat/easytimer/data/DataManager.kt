@@ -1,6 +1,7 @@
 package com.eathemeat.easytimer.data
 
 import android.app.Application
+import android.telephony.mbms.MbmsErrors.InitializationErrors
 import android.util.Log
 import androidx.room.*
 import com.google.gson.Gson
@@ -57,7 +58,7 @@ interface TaskDao {
 @Database(entities = [Task::class],version=1)
 abstract class ETDatabase:RoomDatabase() {
     abstract fun taskDao():TaskDao
-}
+} 
 
 
 
@@ -82,6 +83,10 @@ class DataManager {
 
     }
 
+    private fun check(): Unit {
+        if (mApp == null) throw ExceptionInInitializerError("$TAG is not inited")
+    }
+
     private fun init(app:Application) {
         mApp = app
         db = Room.databaseBuilder(mApp,ETDatabase::class.java,"$TASK_TABLE_NAME").build()
@@ -90,6 +95,7 @@ class DataManager {
     }
 
     fun del(task: Task) {
+        check()
         Log.d(TAG, "del() called with: task = $task")
         var dao = db.taskDao()
         dao.delTask(task)
@@ -97,6 +103,7 @@ class DataManager {
     }
 
     fun add(task: Task): Unit {
+        check()
         Log.d(TAG, "add() called with: task = $task")
         var dao = db.taskDao()
         dao.insertTask(task)
@@ -104,6 +111,7 @@ class DataManager {
     }
     
     fun commit(task:Task) {
+        check()
         Log.d(TAG, "commit() called with: task = $task")
         var dao = db.taskDao()
         dao.insertTask(task)

@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
 
 
     class HomeListAdapter: RecyclerView.Adapter<ViewHolder>() {
-        var mVirualData = Task("","", mutableListOf())
+        var mVirualData = Task(-1,"","", mutableListOf())
 
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
