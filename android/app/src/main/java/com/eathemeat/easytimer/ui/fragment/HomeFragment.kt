@@ -70,10 +70,10 @@ class HomeFragment : Fragment() {
                 holder.itemBinding.clNormal.visibility = View.GONE
                 holder.itemBinding.clVirual.visibility = View.VISIBLE
                 holder.itemBinding.btnAdd.setOnClickListener {
-//                    Navigation.findNavController(holder.itemView).navigate()
+                    Navigation.findNavController(holder.itemView).navigate(R.id.addFragment)
                 }
 
-            }else {
+            } else {
                 var task = DataManager.sIntance.mTaskList[position]
                 holder.itemBinding.clNormal.visibility = View.VISIBLE
                 holder.itemBinding.clVirual.visibility = View.GONE

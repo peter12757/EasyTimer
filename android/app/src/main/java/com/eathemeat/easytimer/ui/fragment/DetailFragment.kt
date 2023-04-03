@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.eathemeat.easytimer.R
+import com.eathemeat.easytimer.databinding.FragmentDetailBinding
 
 class DetailFragment : Fragment() {
 
@@ -15,18 +16,16 @@ class DetailFragment : Fragment() {
     }
 
     private lateinit var viewModel: DetailViewModel
+    private lateinit var binding:FragmentDetailBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_detail, container, false)
+        binding = FragmentDetailBinding.inflate(inflater)
+        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
 }

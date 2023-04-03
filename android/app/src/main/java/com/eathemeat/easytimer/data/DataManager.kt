@@ -1,6 +1,7 @@
 package com.eathemeat.easytimer.data
 
 import android.app.Application
+import android.os.SystemClock
 import android.telephony.mbms.MbmsErrors.InitializationErrors
 import android.util.Log
 import androidx.room.*
@@ -8,7 +9,20 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 
-data class TimeSegment(val startTime:Long,val EndTime:Long,val note:String)
+data class TimeSegment(var startTime:Long,var endTime:Long,var note:String) {
+    fun start(): Unit {
+        startTime = SystemClock.elapsedRealtime()
+
+    }
+
+    fun end(): Unit {
+        endTime = SystemClock.elapsedRealtime()
+    }
+
+    fun isEnd() :Boolean {
+        return endTime > 0
+    }
+}
 
 const val TASK_TABLE_NAME = "task"
 
@@ -21,7 +35,7 @@ data class Task(
     val timeList:MutableList<TimeSegment>
     )
 
-class TaskConverter {
+class SegmentConverter {
 
     @TypeConverter
     fun fromSegmentList(segment: List<TimeSegment>): String {
@@ -46,7 +60,7 @@ interface TaskDao {
     fun getAllTask(): List<Task>
 
     @Query("SELECT * FROM $TASK_TABLE_NAME WHERE name LIKE :name LIMIT 1")
-    fun getTaskByName(names:String): Task
+    fun getTaskByName(name:String): Task
 
     @Insert
     fun insertTask(task:Task): Unit
@@ -55,7 +69,8 @@ interface TaskDao {
     fun delTask(task:Task): Unit
 
 }
-@Database(entities = [Task::class],version=1)
+@Database(entities = [Task::class],version=1, exportSchema = false)
+@TypeConverters(SegmentConverter::class)
 abstract class ETDatabase:RoomDatabase() {
     abstract fun taskDao():TaskDao
 } 
