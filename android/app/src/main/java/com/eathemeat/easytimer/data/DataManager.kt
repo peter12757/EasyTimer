@@ -5,6 +5,7 @@ import android.os.SystemClock
 import android.telephony.mbms.MbmsErrors.InitializationErrors
 import android.util.Log
 import androidx.room.*
+import com.eathemeat.easytimer.util.OtherThread
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -105,31 +106,42 @@ class DataManager {
     private fun init(app:Application) {
         mApp = app
         db = Room.databaseBuilder(mApp,ETDatabase::class.java,"$TASK_TABLE_NAME").build()
-        var dao = db.taskDao()
-        mTaskList.addAll(dao.getAllTask())
+        OtherThread.sInstance.post{
+            var dao = db.taskDao()
+            mTaskList.addAll(dao.getAllTask())
+        }
     }
 
     fun del(task: Task) {
         check()
         Log.d(TAG, "del() called with: task = $task")
-        var dao = db.taskDao()
-        dao.delTask(task)
-        mTaskList.remove(task)
+
+        OtherThread.sInstance.post{
+            var dao = db.taskDao()
+            dao.delTask(task)
+            mTaskList.remove(task)
+        }
+
     }
 
     fun add(task: Task): Unit {
         check()
         Log.d(TAG, "add() called with: task = $task")
-        var dao = db.taskDao()
-        dao.insertTask(task)
-        mTaskList.add(task)
+
+        OtherThread.sInstance.post {
+            var dao = db.taskDao()
+            dao.insertTask(task)
+            mTaskList.add(task)
+        }
     }
     
     fun commit(task:Task) {
         check()
         Log.d(TAG, "commit() called with: task = $task")
-        var dao = db.taskDao()
-        dao.insertTask(task)
+        OtherThread.sInstance.post {
+            var dao = db.taskDao()
+            dao.insertTask(task)
+        }
     }
 
 }
