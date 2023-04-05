@@ -1,7 +1,9 @@
 package com.eathemeat.easytimer.ui.fragment
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +19,8 @@ import com.eathemeat.easytimer.data.Task
 import com.eathemeat.easytimer.databinding.ActivityHomeBinding
 import com.eathemeat.easytimer.databinding.FragmentHomeBinding
 import com.eathemeat.easytimer.databinding.ItemHomeListBinding
+
+ val TAG = HomeFragment::class.java.simpleName
 
 class HomeFragment : Fragment() {
 
@@ -44,6 +48,46 @@ class HomeFragment : Fragment() {
         binding.rvHomeList.layoutManager = mLayoutManager
         binding.rvHomeList.adapter = mAdapter
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume() called")
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart() called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d(TAG, "onDestroy() called")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause() called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop() called")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "onDestroyView() called")
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.d(TAG, "onAttach() called with: context = $context")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d(TAG, "onDetach() called")
     }
 
     class ViewHolder(val itemBinding: ItemHomeListBinding,val type:Int) : RecyclerView.ViewHolder(itemBinding.root) {
