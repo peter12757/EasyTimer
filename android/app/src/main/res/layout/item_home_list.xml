@@ -2,14 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="90dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_normal"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
     <TextView
         android:id="@+id/txt_name"
         android:layout_width="wrap_content"
@@ -30,13 +30,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:ellipsize="end"
         />
+        <View
+            android:id="@+id/v_empty1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toEndOf="@id/txt_desc"
+            app:layout_constraintEnd_toStartOf="@+id/btn_del"
+            app:layout_constraintTop_toTopOf="parent"/>
 
     <Button
         android:id="@+id/btn_del"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/v_empty1"
         app:layout_constraintBottom_toBottomOf="parent"
         android:text="删除"
         />
@@ -49,7 +57,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_virual"
         android:layout_width="match_parent"
-        android:layout_height="90dp">
+        android:visibility="visible"
+        android:layout_height="match_parent">
 
         <Button
             android:id="@+id/btn_add"
@@ -60,6 +69,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:text="添加"
             />
+        <View
+            android:id="@+id/v_empty2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toEndOf="@id/btn_add"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 <!--        <Button-->
 <!--            android:id="@+id/btn_add"-->
 <!--            android:layout_width="wrap_content"-->

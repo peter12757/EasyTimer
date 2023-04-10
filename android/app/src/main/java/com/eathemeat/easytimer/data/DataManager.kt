@@ -2,22 +2,23 @@ package com.eathemeat.easytimer.data
 
 import android.app.Application
 import android.os.SystemClock
-import android.telephony.mbms.MbmsErrors.InitializationErrors
 import android.util.Log
 import androidx.room.*
 import com.eathemeat.easytimer.util.OtherThread
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.util.*
 
 
 data class TimeSegment(var startTime:Long,var endTime:Long,var note:String) {
     fun start(): Unit {
-        startTime = SystemClock.elapsedRealtime()
-
+        startTime = Calendar.getInstance().timeInMillis
+        Log.d(TAG, "start() called  $startTime")
     }
 
     fun end(): Unit {
-        endTime = SystemClock.elapsedRealtime()
+        endTime = Calendar.getInstance().timeInMillis
+        Log.d(TAG, "end() called ${endTime}")
     }
 
     fun isEnd() :Boolean {
@@ -29,12 +30,21 @@ const val TASK_TABLE_NAME = "task"
 
 @Entity(tableName = "${TASK_TABLE_NAME}")
 data class Task(
-    @PrimaryKey val uid:Long,
+    @PrimaryKey val uid:Long = generateUid(),
     @ColumnInfo(name = "name") val name:String,
     @ColumnInfo(name = "desc") val desc:String,
     @ColumnInfo(name = "segment")
     val timeList:MutableList<TimeSegment>
-    )
+    ) {
+    companion object {
+        fun generateUid(): Long {
+            var time = Calendar.getInstance().timeInMillis
+            return time
+        }
+    }
+
+}
+
 
 class SegmentConverter {
 
@@ -68,6 +78,9 @@ interface TaskDao {
 
     @Delete
     fun delTask(task:Task): Unit
+
+    @Update
+    fun updateTask(task:Task):Unit
 
 }
 @Database(entities = [Task::class],version=1, exportSchema = false)
@@ -141,6 +154,14 @@ class DataManager {
         OtherThread.sInstance.post {
             var dao = db.taskDao()
             dao.insertTask(task)
+        }
+    }
+
+    fun notifyDataChanged(task: Task) {
+        check()
+        OtherThread.sInstance.post {
+            var dao = db.taskDao()
+            dao.updateTask(task)
         }
     }
 

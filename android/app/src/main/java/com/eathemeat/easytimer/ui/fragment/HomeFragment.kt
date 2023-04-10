@@ -9,9 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.os.bundleOf
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutParams
 import androidx.recyclerview.widget.RecyclerView.Orientation
 import com.eathemeat.easytimer.R
 import com.eathemeat.easytimer.data.DataManager
@@ -19,8 +21,9 @@ import com.eathemeat.easytimer.data.Task
 import com.eathemeat.easytimer.databinding.ActivityHomeBinding
 import com.eathemeat.easytimer.databinding.FragmentHomeBinding
 import com.eathemeat.easytimer.databinding.ItemHomeListBinding
+import com.eathemeat.easytimer.ui.fragment.DetailFragment.Companion.KEY_POS
 
- val TAG = HomeFragment::class.java.simpleName
+val TAG = HomeFragment::class.java.simpleName
 
 class HomeFragment : Fragment() {
 
@@ -53,6 +56,7 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume() called")
+        mAdapter.notifyDataSetChanged()
     }
 
     override fun onStart() {
@@ -101,26 +105,34 @@ class HomeFragment : Fragment() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             var itemBinding = ItemHomeListBinding.inflate(LayoutInflater.from(parent.context))
+            itemBinding.root.layoutParams = ViewGroup.LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
             return ViewHolder(itemBinding,viewType)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            var task = mVirualData
+            if (position !=  DataManager.sIntance.mTaskList.size)
+                task = DataManager.sIntance.mTaskList[position]
+            Log.d(TAG, "onBindViewHolder() called with: task = $task, position = $position")
+            holder.itemView.tag = task
             holder.itemView.setOnClickListener {
-                var task = DataManager.sIntance.mTaskList[position]
                 // TODO: 跳转详情页
+                Log.d(TAG, "onBindViewHolder() called")
+                if (holder.itemView.tag == mVirualData) return@setOnClickListener
+                Navigation.findNavController(holder.itemView).navigate(R.id.detailFragment,
+                    bundleOf(Pair(KEY_POS,position))
+                )
             }
-            if (position == DataManager.sIntance.mTaskList.size) {
+            if (task == mVirualData) {
                 //virual
-                holder.itemBinding.clNormal.visibility = View.GONE
+                holder.itemBinding.clNormal.visibility = View.INVISIBLE
                 holder.itemBinding.clVirual.visibility = View.VISIBLE
                 holder.itemBinding.btnAdd.setOnClickListener {
                     Navigation.findNavController(holder.itemView).navigate(R.id.addFragment)
                 }
-
             } else {
-                var task = DataManager.sIntance.mTaskList[position]
                 holder.itemBinding.clNormal.visibility = View.VISIBLE
-                holder.itemBinding.clVirual.visibility = View.GONE
+                holder.itemBinding.clVirual.visibility = View.INVISIBLE
                 holder.itemBinding.txtName.text = task.name
                 holder.itemBinding.txtDesc.text = task.desc
                 holder.itemBinding.btnDel.setOnClickListener {

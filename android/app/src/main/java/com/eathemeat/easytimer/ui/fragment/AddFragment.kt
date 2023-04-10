@@ -29,7 +29,7 @@ class AddFragment : Fragment() {
         binding = FragmentAddBinding.inflate(inflater)
         viewModel = ViewModelProvider(this).get(AddViewModel::class.java)
         binding.mbtnAdd.setOnClickListener {
-            DataManager.sIntance.add(Task(UUID.randomUUID().node(),"${binding.edtxtName.text}","${binding.edtxtDesc.text}",
+            DataManager.sIntance.add(Task(Task.generateUid(),"${binding.edtxtName.text}","${binding.edtxtDesc.text}",
                 mutableListOf()
 
             ))
