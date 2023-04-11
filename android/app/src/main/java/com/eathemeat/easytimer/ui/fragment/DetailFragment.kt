@@ -53,12 +53,15 @@ class DetailFragment() : Fragment() {
             if (isChecked) {
                 mSegment = TimeSegment(SystemClock.elapsedRealtime(),0,"")
                 mSegment!!.start()
+                buttonView.text = "End"
             } else {
                 mSegment?.let {
                     it.end()
+                    buttonView.text = "Start"
                     mTask.timeList.add(it)
                     DataManager.sIntance.notifyDataChanged(mTask)
                     mAdapter.notifyDataSetChanged()
+
                 }
             }
         }
