@@ -128,11 +128,10 @@ class DataManager {
     fun del(task: Task) {
         check()
         Log.d(TAG, "del() called with: task = $task")
-
+        mTaskList.remove(task)
         OtherThread.sInstance.post{
             var dao = db.taskDao()
             dao.delTask(task)
-            mTaskList.remove(task)
         }
 
     }
@@ -140,11 +139,11 @@ class DataManager {
     fun add(task: Task): Unit {
         check()
         Log.d(TAG, "add() called with: task = $task")
-
+        mTaskList.add(task)
         OtherThread.sInstance.post {
             var dao = db.taskDao()
             dao.insertTask(task)
-            mTaskList.add(task)
+
         }
     }
     

@@ -16,6 +16,8 @@ import com.eathemeat.easytimer.data.TimeSegment
 import com.eathemeat.easytimer.databinding.FragmentDetailBinding
 import com.eathemeat.easytimer.databinding.ItemSegmentListBinding
 import com.eathemeat.easytimer.util.TimeUtil
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DetailFragment() : Fragment() {
 
@@ -89,6 +91,15 @@ class DetailFragment() : Fragment() {
             var segment = task.timeList[position]
             holder.binding.txtStartTime.text = TimeUtil.Time2String(segment.startTime)
             holder.binding.txtEndTime.text = TimeUtil.Time2String(segment.endTime)
+            var time = segment.endTime - segment.startTime
+            var hour = (time/(60*60*1000))  //小时
+            var min = ((time/(60*1000))-hour*60); //分钟
+            var second=(time/1000-hour*60*60-min*60);//秒
+            var str = StringBuffer("持续时间：")
+            if (hour != 0L) str.append("${hour}小时")
+            if (hour != 0L || min != 0L) str.append("${min}分")
+            if (second != 0L) str.append("${second}秒")
+            holder.binding.txtTime.text = "$str"
         }
 
         override fun getItemCount(): Int {
