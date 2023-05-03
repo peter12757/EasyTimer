@@ -2,3 +2,8 @@
 # CLI tool, only in development environment.
 # https://goframe.org/pages/viewpage.action?pageId=3673173
 gfcli:
+ gen:
+  dao:
+  - link:   "mysql:easytime:Ihm+12757@tcp(47.103.213.132:13306)/easytime_db"
+    tables: "user"
+    jsonCase: "CamelLower"

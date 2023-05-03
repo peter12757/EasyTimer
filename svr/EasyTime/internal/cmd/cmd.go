@@ -22,6 +22,11 @@ var (
 				group.Bind(
 					hello.New(),
 				)
+
+				//user
+				group.Bind(
+					contr
+				)
 			})
 			s.Run()
 			return nil
