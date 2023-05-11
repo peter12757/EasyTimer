@@ -1,7 +1,13 @@
 package user
 
-import 
+import (
+	"context"
 
-func init() {
-	service.Re
-}  
+	"EasyTime/internal/model/entity"
+)
+
+func Create(ctx context.Context, in entity.User) (err *error) {
+	if in.Nickname == "" {
+		in.Nickname = in.
+	}
+}

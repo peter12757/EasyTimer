@@ -9,5 +9,5 @@ type UsrInfoReq struct {
 }
 
 type UsrInfoRes struct {
+	
 }
-  
