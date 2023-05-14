@@ -6,8 +6,6 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 	"github.com/gogf/gf/v2/os/gcmd"
-
-	"EasyTime/internal/controller/hello"
 )
 
 var (
@@ -19,14 +17,9 @@ var (
 			s := g.Server()
 			s.Group("/", func(group *ghttp.RouterGroup) {
 				group.Middleware(ghttp.MiddlewareHandlerResponse)
-				group.Bind(
-					hello.New(),
-				)
 
 				//user
-				group.Bind(
-					contr
-				)
+				group.Bind()
 			})
 			s.Run()
 			return nil

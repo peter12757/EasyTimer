@@ -15,6 +15,7 @@ type User struct {
 	Password   string      `json:"password"   ` // User Passport
 	CreateTime *gtime.Time `json:"createTime" ` // Created Time
 	Phone      string      `json:"phone"      ` // User Phone
-	Ext        string      `json:"ext"        ` //
+	Ext        string      `json:"ext"        ` // ext
+	Passport   string      `json:"passport"   ` // passport
+	Updatetime *gtime.Time `json:"updatetime" ` //
 }
-

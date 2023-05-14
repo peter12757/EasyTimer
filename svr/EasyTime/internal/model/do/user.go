@@ -17,5 +17,7 @@ type User struct {
 	Password   interface{} // User Passport
 	CreateTime *gtime.Time // Created Time
 	Phone      interface{} // User Phone
-	Ext        interface{} //
+	Ext        interface{} // ext
+	Passport   interface{} // passport
+	Updatetime *gtime.Time //
 }
