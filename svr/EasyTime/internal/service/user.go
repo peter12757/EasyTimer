@@ -6,13 +6,15 @@
 package service
 
 import (
-	"EasyTime/internal/model/entity"
+	"EasyTime/internal/model"
 	"context"
 )
 
 type (
 	IUser interface {
-		Create(ctx context.Context, in entity.User) (err error)
+		Create(ctx context.Context, in model.UserCreateInput) (err error)
+		SignIn(ctx context.Context, in model.UserSignInput) (err error)
+		IsPassportAvilable(ctx context.Context, passport string) (bool, error)
 	}
 )
 

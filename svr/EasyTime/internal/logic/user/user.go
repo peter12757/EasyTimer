@@ -6,6 +6,7 @@ import (
 	"EasyTime/internal/dao"
 	"EasyTime/internal/model"
 	"EasyTime/internal/model/do"
+	"EasyTime/internal/model/entity"
 	"EasyTime/internal/service"
 
 	"github.com/gogf/gf/v2/database/gdb"
@@ -30,7 +31,7 @@ func (s *sUser) Create(ctx context.Context, in model.UserCreateInput) (err error
 	}
 	var aviliable bool
 
-	aviliable, err = service.IsPassportAvilable(ctx, in.Passport)
+	aviliable, err = service.User().IsPassportAvilable(ctx, in.Passport)
 	if err != nil {
 		return err
 	}
@@ -49,8 +50,21 @@ func (s *sUser) Create(ctx context.Context, in model.UserCreateInput) (err error
 	})
 }
 
-func (s *sUser) SignIn(ctx context.Context, in model.UserSignInput) {
-	 
+func (s *sUser) SignIn(ctx context.Context, in model.UserSignInput) (err error) {
+	var user *entity.User
+	err = dao.User.Ctx(ctx).Where(do.User{
+		Passport: in.Passport,
+		Password: in.Password,
+	}).Scan(&user)
+	if err != nil {
+
+		return err
+	}
+	if user == nil {
+		return gerror.New(`Passport or Password not correct`)
+	}
+	//session is online???
+	return nil
 }
 
 func (s *sUser) IsPassportAvilable(ctx context.Context, passport string) (bool, error) {
