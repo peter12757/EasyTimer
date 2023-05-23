@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"EasyTime/internal/controller/user"
+	"EasyTime/internal/service"
 	"context"
 
 	"github.com/gogf/gf/v2/frame/g"
@@ -19,7 +21,8 @@ var (
 				group.Middleware(ghttp.MiddlewareHandlerResponse)
 
 				//user
-				group.Bind()
+				group.Middleware(service.Middleware(), ctx, ghttp.MiddlewareCORS)
+				group.Bind(user.New())
 			})
 			s.Run()
 			return nil
