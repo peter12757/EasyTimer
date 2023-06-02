@@ -3,6 +3,7 @@ package middleware
 import (
 	"EasyTime/internal/service"
 
+	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"
 )
 
@@ -19,6 +20,6 @@ func New() service.IMiddleware {
 }
 
 func (s *sMiddleware) Auth(r *ghttp.Request) {
-
+	g.Log("Middleware Auth")
 	r.Middleware.Next()
 }

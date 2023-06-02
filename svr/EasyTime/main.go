@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "EasyTime/internal/logic"
 	_ "EasyTime/internal/packed"
 
 	"github.com/gogf/gf/v2/os/gctx"

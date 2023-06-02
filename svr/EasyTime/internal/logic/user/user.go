@@ -47,7 +47,7 @@ func (s *sUser) Create(ctx context.Context, in model.UserCreateInput) (err error
 			Phone:    in.Phone,
 		}).Insert()
 		return err
-	}) 
+	})
 }
 
 func (s *sUser) SignIn(ctx context.Context, in model.UserSignInput) (err error) {

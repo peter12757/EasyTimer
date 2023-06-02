@@ -17,7 +17,7 @@ type SignUpRes struct {
 }
 
 type SignInReq struct {
-	g.Meta    `path:"/user/signin" method:"get" tags:"UserServices" summary:"sign up"`
+	g.Meta    `path:"/user/signin" method:"get" tags:"UserServices" summary:"sign in"`
 	Passport  string `v:"required"`
 	Password  string `v:"required"`
 	LoginType int    `v:"required"`

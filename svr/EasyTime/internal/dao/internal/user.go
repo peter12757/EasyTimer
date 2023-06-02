@@ -32,7 +32,7 @@ type UserColumns struct {
 
 // userColumns holds the columns for table user.
 var userColumns = UserColumns{
-	Id:         "id",
+	Id:         "Id",
 	Nickname:   "nickname",
 	Password:   "password",
 	CreateTime: "create_time",
