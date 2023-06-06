@@ -1,4 +1,4 @@
-package com.eathemeat.easytimer.ui.fragment
+package com.eathemeat.easytimer.ui.home.fragment
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -32,7 +32,7 @@ class DetailFragment() : Fragment() {
 
     lateinit var mTask: Task
     lateinit var mLayoutManager:LinearLayoutManager
-    lateinit var mAdapter:SegmentAdapter
+    lateinit var mAdapter: SegmentAdapter
     var mSegment:TimeSegment? = null
 
 

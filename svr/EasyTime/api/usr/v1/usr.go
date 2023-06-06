@@ -12,12 +12,12 @@ type SignUpReq struct {
 }
 
 type SignUpRes struct {
-	// Code int
-	// Msg  string
+	Code int    `v:"required"`
+	Msg  string `v:"required"`
 }
 
 type SignInReq struct {
-	g.Meta    `path:"/user/signin" method:"get" tags:"UserServices" summary:"sign in"`
+	g.Meta    `path:"/user/signin" method:"get" tags:"UserServices" summary:"sign up"`
 	Passport  string `v:"required"`
 	Password  string `v:"required"`
 	LoginType int    `v:"required"`

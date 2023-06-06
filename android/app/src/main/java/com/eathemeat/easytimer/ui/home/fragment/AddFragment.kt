@@ -1,4 +1,4 @@
-package com.eathemeat.easytimer.ui.fragment
+package com.eathemeat.easytimer.ui.home.fragment
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle

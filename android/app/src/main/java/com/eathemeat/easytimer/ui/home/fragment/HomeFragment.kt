@@ -1,4 +1,4 @@
-package com.eathemeat.easytimer.ui.fragment
+package com.eathemeat.easytimer.ui.home.fragment
 
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
@@ -21,7 +21,7 @@ import com.eathemeat.easytimer.data.Task
 import com.eathemeat.easytimer.databinding.ActivityHomeBinding
 import com.eathemeat.easytimer.databinding.FragmentHomeBinding
 import com.eathemeat.easytimer.databinding.ItemHomeListBinding
-import com.eathemeat.easytimer.ui.fragment.DetailFragment.Companion.KEY_POS
+import com.eathemeat.easytimer.ui.home.fragment.DetailFragment.Companion.KEY_POS
 
 val TAG = HomeFragment::class.java.simpleName
 
@@ -35,7 +35,7 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
 
     private lateinit var mLayoutManager:LinearLayoutManager
-    private lateinit var mAdapter:HomeListAdapter
+    private lateinit var mAdapter: HomeListAdapter
 
 
     override fun onCreateView(

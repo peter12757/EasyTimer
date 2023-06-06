@@ -1,4 +1,4 @@
-package com.eathemeat.easytimer.ui
+package com.eathemeat.easytimer.ui.home
 
 import androidx.appcompat.app.AppCompatActivity
 import android.annotation.SuppressLint

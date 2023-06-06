@@ -1,11 +1,11 @@
 package com.eathemeat.easytimer.ui
 
 import androidx.appcompat.app.AppCompatActivity
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.Window
 import com.eathemeat.easytimer.databinding.ActivitySplashBinding
+import com.eathemeat.easytimer.ui.home.HomeActivity
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -34,7 +34,7 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun trans2HomeActivity() {
-        startActivity(Intent(this,HomeActivity::class.java))
+        startActivity(Intent(this, HomeActivity::class.java))
         finish()
     }
 
