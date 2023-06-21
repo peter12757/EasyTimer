@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"EasyTime/internal/controller/user"
-	"EasyTime/internal/service"
+	"ProjectRoot/internal/controller/user"
+	"ProjectRoot/internal/service"
 	"context"
 
 	"github.com/gogf/gf/v2/frame/g"

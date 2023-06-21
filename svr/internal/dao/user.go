@@ -5,7 +5,7 @@
 package dao
 
 import (
-	"EasyTime/internal/dao/internal"
+	"ProjectRoot/internal/dao/internal"
 )
 
 // internalUserDao is internal type for wrapping internal DAO implements.

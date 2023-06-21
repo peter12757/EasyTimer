@@ -1,12 +1,12 @@
 package main
 
 import (
-	_ "EasyTime/internal/logic"
-	_ "EasyTime/internal/packed"
+	_ "ProjectRoot/internal/logic"
+	_ "ProjectRoot/internal/packed"
 
 	"github.com/gogf/gf/v2/os/gctx"
 
-	"EasyTime/internal/cmd"
+	"ProjectRoot/internal/cmd"
 )
 
 func main() {

@@ -5,6 +5,6 @@
 package logic
 
 import (
-	_ "EasyTime/internal/logic/middleware"
-	_ "EasyTime/internal/logic/user"
+	_ "ProjectRoot/internal/logic/middleware"
+	_ "ProjectRoot/internal/logic/user"
 )

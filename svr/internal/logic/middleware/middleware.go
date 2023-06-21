@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"EasyTime/internal/service"
+	"ProjectRoot/internal/service"
 
 	"github.com/gogf/gf/v2/frame/g"
 	"github.com/gogf/gf/v2/net/ghttp"

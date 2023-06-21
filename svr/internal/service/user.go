@@ -6,7 +6,7 @@
 package service
 
 import (
-	"EasyTime/internal/model"
+	"ProjectRoot/internal/model"
 	"context"
 )
 

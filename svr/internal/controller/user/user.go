@@ -1,9 +1,9 @@
 package user
 
 import (
-	v1 "EasyTime/api/usr/v1"
-	"EasyTime/internal/model"
-	"EasyTime/internal/service"
+	v1 "ProjectRoot/api/usr/v1"
+	"ProjectRoot/internal/model"
+	"ProjectRoot/internal/service"
 	"context"
 )
 
@@ -25,7 +25,7 @@ func (c *Controller) SignUp(ctx context.Context, req *v1.SignUpReq) (res *v1.Sig
 
 func (c *Controller) SignIn(ctx context.Context, req *v1.SignInReq) (res *v1.SignInRes, err error) {
 	err = service.User().SignIn(ctx, model.UserSignInput{
-		Passport:  req.Passport, 
+		Passport:  req.Passport,
 		Password:  req.Password,
 		LoginType: req.LoginType,
 	})

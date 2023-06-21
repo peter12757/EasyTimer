@@ -3,11 +3,11 @@ package user
 import (
 	"context"
 
-	"EasyTime/internal/dao"
-	"EasyTime/internal/model"
-	"EasyTime/internal/model/do"
-	"EasyTime/internal/model/entity"
-	"EasyTime/internal/service"
+	"ProjectRoot/internal/dao"
+	"ProjectRoot/internal/model"
+	"ProjectRoot/internal/model/do"
+	"ProjectRoot/internal/model/entity"
+	"ProjectRoot/internal/service"
 
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"

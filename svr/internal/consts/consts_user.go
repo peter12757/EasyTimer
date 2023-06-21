@@ -1,7 +1,10 @@
 package consts
 
+// 登录类型
+type LoginType int
+
 const (
-	LoginTypePassport = 1
-	LoginTypePhone    = 2
-	LoginTypeTest     = 3
+	Passport LoginType = 1
+	Phone    LoginType = 2
+	Test     LoginType = 3
 )

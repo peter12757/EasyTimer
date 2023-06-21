@@ -7,3 +7,13 @@ gfcli:
   - link:   "mysql:easytime:Ihm+12757@tcp(47.103.213.132:13306)/easytime_db"
     tables: "user,Cla_Notes"
     jsonCase: "CamelLower"
+
+build:
+  name:     "gf"
+  arch:     "all"
+  system:   "all"
+  mod:      "none"  
+  packSrc:  "resource,manifest"
+  version:  "v1.0.0" 
+  output:   "./bin"
+  extra:    ""
