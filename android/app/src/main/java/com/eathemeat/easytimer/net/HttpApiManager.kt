@@ -1,21 +1,17 @@
 package com.eathemeat.easytimer.net
 
-import com.eathemeat.easytimer.net.HttpApiConfig.Companion.KEY_TIME_BASE_URL
+import android.util.Log
 import com.eathemeat.easytimer.net.time.TimeApi
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import java.net.HttpURLConnection
+import java.security.SecureRandom
+import java.security.cert.X509Certificate
+import javax.net.ssl.*
 
-class HttpApiManager {
+const val TAG = "HttpApiManager"
 
-    private constructor() {
-
-    }
-
-    companion object {
-        var sIntance = HttpApiManager()
+object HttpApiManager {
 
 
-    }
 
     private lateinit var timeApi: TimeApi
     private lateinit var config:HttpApiConfig
@@ -23,15 +19,43 @@ class HttpApiManager {
 
     fun init(): Unit {
         config = HttpApiConfig()
+        handleSSHHandleshake()
     }
 
-    fun getTimeApi(): TimeApi {
-        if (timeApi == null) {
-            var retrofit:Retrofit = Retrofit.Builder().baseUrl(config[KEY_TIME_BASE_URL] as String)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(Corou).build()
-            timeApi = retrofit.create(TimeApi::class.java)
+    private fun handleSSHHandleshake() = try {
+        var trustManager = object:X509TrustManager{
+            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+                Log.d(TAG, "checkClientTrusted: $authType")
+            }
+
+            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+                Log.d(TAG, "checkServerTrusted: $authType")
+            }
+
+            override fun getAcceptedIssuers(): Array<X509Certificate> {
+                Log.d(TAG, "getAcceptedIssuers: ")
+                return emptyArray()
+            }
+
         }
-        return timeApi
+        var trustAllCerts = arrayOf(trustManager)
+        var sslContext = SSLContext.getInstance("TLS")
+        sslContext.init(null,trustAllCerts, SecureRandom())
+        HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.socketFactory)
+        HttpsURLConnection.setDefaultHostnameVerifier(object :HostnameVerifier(){
+            override fun verify(hostname: String?, session: SSLSession?): Boolean {
+                Log.d(TAG, "verify: ")
+                return true
+            }
+
+        })
+    }catch (e:Exception) {
+        Log.e(TAG, "handleSSHHandleshake: ", e)
     }
+
+
+
+
+
+
 }
