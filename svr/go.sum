@@ -31,6 +31,8 @@ github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0/go.mod h1:fyg78
 github.com/gogf/gf/v2 v2.0.4/go.mod h1:apktt6TleWtCIwpz63vBqUnw8MX8gWKoZyxgDpXFtgM=
 github.com/gogf/gf/v2 v2.4.3 h1:OP91EICmypAEaEpwSyjFnAZtTfcmeKXJQnPP4FZR/BM=
 github.com/gogf/gf/v2 v2.4.3/go.mod h1:tsbmtwcAl2chcYoq/fP9W2FZf06aw4i89X34nbSHo9Y=
+github.com/gogf/gf/v2 v2.4.4 h1:+s7PKxd4LJKjJn5ODZvYcbXMM5e+88Ww1W3GdOarLE8=
+github.com/gogf/gf/v2 v2.4.4/go.mod h1:tsbmtwcAl2chcYoq/fP9W2FZf06aw4i89X34nbSHo9Y=
 github.com/gogf/swagger/v2 v2.0.0 h1:F8CUFjVrz89rcCmQvnuGfsPOWUSz+LKGD+utc68U41I=
 github.com/gogf/swagger/v2 v2.0.0/go.mod h1:wNfUV3S2BUy7QvoR43FcjtbCWPzB9UOUyd+BYO0BB2g=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
