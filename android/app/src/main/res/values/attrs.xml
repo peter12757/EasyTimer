@@ -3,4 +3,17 @@
         <attr name="fullscreenBackgroundColor" format="color" />
         <attr name="fullscreenTextColor" format="color" />
     </declare-styleable>
+
+    <declare-styleable name="loading_view_blocks">
+        <attr name="halfBlockWidth" format="dimension" />
+        <attr name="blockInterval" format="dimension" />
+        <attr name="initPosition" format="integer" />
+        <attr name="isClockWise" format="boolean" />
+        <attr name="lineNum" format="integer"  />
+        <attr name="moveSpeed" format="integer"  />
+        <attr name="blockColor" format="color"  />
+        <attr name="moveBlockAngle" format="float"  />
+        <attr name="fixBlockAngle" format="float"  />
+        <attr name="moveInterpolator" format="reference"  />
+    </declare-styleable>
 </resources>

@@ -57,12 +57,24 @@
 
         <com.google.android.material.checkbox.MaterialCheckBox
             android:id="@+id/agree_mcb"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:layout_margin="10dp"
+            app:layout_constraintLeft_toLeftOf="@+id/password_til"
             app:layout_constraintTop_toBottomOf="@+id/password_til"
-            android:text="同意《用户协议》"/>
+            android:text="同意"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/agree_mtv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:layout_constraintTop_toTopOf="@+id/agree_mcb"
+            app:layout_constraintBottom_toBottomOf="@+id/agree_mcb"
+            app:layout_constraintLeft_toRightOf="@+id/agree_mcb"
+            android:text="《用户协议》"
+            android:textColor="@color/light_blue_A400"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/login_mb"

@@ -2,6 +2,8 @@ package com.eathemeat.easytimer.ui.user
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Window
+import com.eathemeat.easytimer.R
 import com.eathemeat.easytimer.ui.user.fragment.LoginFragment
 
 class LoginActivity : AppCompatActivity() {
@@ -14,5 +16,6 @@ class LoginActivity : AppCompatActivity() {
                 .replace(R.id.container, LoginFragment.newInstance())
                 .commitNow()
         }
+        supportActionBar?.hide()
     }
 }

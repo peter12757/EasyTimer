@@ -59,11 +59,12 @@ func (s *sUser) SignIn(ctx context.Context, in model.UserSignInput) (err error) 
 	if err != nil {
 
 		return err
-	}
+	} 
 	if user == nil {
 		return gerror.New(`Passport or Password not correct`)
 	}
 	//session is online???
+
 	return nil
 }
 

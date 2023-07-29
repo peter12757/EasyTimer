@@ -27,6 +27,10 @@ class OtherThread : HandlerThread {
         }
     }
 
+    fun postDelay(runnable: Runnable,delayMillis:Long): Unit {
+        handler.postDelayed(runnable,delayMillis)
+    }
+
 
     fun registerHandler(runnable: OtherMsgHandler): Boolean {
         return null == handler.msgMap.put(runnable.getCode(),runnable)
