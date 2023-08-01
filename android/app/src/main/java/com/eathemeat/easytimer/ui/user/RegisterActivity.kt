@@ -2,7 +2,8 @@ package com.eathemeat.easytimer.ui.user
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.eathemeat.easytimer.ui.user.ui.user.fragment.RegisterFragment
+import com.eathemeat.easytimer.R
+import com.eathemeat.easytimer.ui.user.fragment.RegisterFragment
 
 class RegisterActivity : AppCompatActivity() {
 

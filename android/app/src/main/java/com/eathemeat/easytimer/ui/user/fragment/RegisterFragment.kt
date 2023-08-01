@@ -1,4 +1,4 @@
-package com.eathemeat.easytimer.ui.user.ui.user.fragment
+package com.eathemeat.easytimer.ui.user.fragment
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.eathemeat.easytimer.R
 import com.eathemeat.easytimer.databinding.FragmentRegisterBinding
+import com.eathemeat.easytimer.ui.widget.toast.ToastManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class RegisterFragment : Fragment() {
@@ -38,10 +39,9 @@ class RegisterFragment : Fragment() {
 
 1
             if (TextUtils.isEmpty(passPort) || TextUtils.isEmpty(passWord) || TextUtils.isEmpty(phone)) {
-
+                    ToastManager.show("请检查注册信息，不能为空！")
             }
 
-            // TODO: register
 
         }
         return binding.root
