@@ -2,8 +2,12 @@ package com.eathemeat.easytimer.data
 
 import android.app.Application
 import android.os.SystemClock
+import android.provider.ContactsContract.CommonDataKinds.Nickname
+import android.text.TextUtils
 import android.util.Log
 import androidx.room.*
+import com.eathemeat.easytimer.net.HttpApiManager
+import com.eathemeat.easytimer.net.user.User
 import com.eathemeat.easytimer.util.OtherThread
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -97,6 +101,8 @@ class DataManager {
     lateinit var mApp:Application
     var mTaskList = mutableListOf<Task>()
 
+    private val user:User = User(-1,"","")
+
     lateinit var db:ETDatabase
 
 
@@ -162,6 +168,12 @@ class DataManager {
             var dao = db.taskDao()
             dao.updateTask(task)
         }
+    }
+
+    fun registerUser(passPort:String, passWord:String, phone:String , nickname: String): User {
+        if (user.Id >0) return user
+        if (TextUtils.isEmpty(passWord) || TextUtils.isEmpty(passPort) || TextUtils.isEmpty(nickname)) throw NullPointerException("something wrpng")
+        HttpApiManager.userApi.register(passPort,passWord,phone,nickname)
     }
 
 }

@@ -41,6 +41,7 @@ class RegisterFragment : Fragment() {
             if (TextUtils.isEmpty(passPort) || TextUtils.isEmpty(passWord) || TextUtils.isEmpty(phone)) {
                     ToastManager.show("请检查注册信息，不能为空！")
             }
+        // TODO: register
 
 
         }

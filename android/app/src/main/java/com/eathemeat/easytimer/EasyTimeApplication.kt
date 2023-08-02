@@ -3,6 +3,7 @@ package com.eathemeat.easytimer
 import android.app.Application
 import android.util.Log
 import com.eathemeat.easytimer.data.DataManager
+import com.eathemeat.easytimer.net.HttpApiManager
 import com.eathemeat.easytimer.ui.widget.toast.ToastManager
 import com.eathemeat.easytimer.util.OtherThread
 import java.util.logging.LogManager
@@ -15,6 +16,7 @@ class EasyTimeApplication : Application() {
         super.onCreate()
         DataManager.init(this)
         ToastManager.init(this)
+        HttpApiManager.init()
     }
 
     override fun onTerminate() {

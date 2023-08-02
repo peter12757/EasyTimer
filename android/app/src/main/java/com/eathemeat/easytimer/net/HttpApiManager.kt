@@ -1,23 +1,20 @@
 package com.eathemeat.easytimer.net
 
 import android.util.Log
-import com.eathemeat.easytimer.data.UserInfo
 import com.eathemeat.easytimer.net.time.TimeApi
+import com.eathemeat.easytimer.net.user.UserAPI
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 import java.lang.reflect.Type
-import java.net.HttpURLConnection
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import java.util.*
-import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.*
@@ -29,10 +26,11 @@ const val TAG = "HttpApiManager"
 
 object HttpApiManager {
 
+     lateinit var userApi:UserAPI
+    //业务api
+     lateinit var timeApi: TimeApi
+     lateinit var config:HttpApiConfig
 
-
-    private lateinit var timeApi: TimeApi
-    private lateinit var config:HttpApiConfig
 
 
     fun init(): Unit {
@@ -66,13 +64,14 @@ object HttpApiManager {
         })
 
         var gson = gsonBuild.create()
-        var retrofit = Retrofit.Builder().baseUrl(config[HttpApiConfig.KEY_TIME_BASE_URL] as String)
+        var retrofit = Retrofit.Builder().baseUrl(config[HttpApiConfig.KEY_BASE_URL] as String)
             .client(client).addConverterFactory(GsonConverterFactory.create(gson))
             .callbackExecutor(Executors.newSingleThreadExecutor())  //todo
 //            .addCallAdapterFactory(CoroutineCallAdap)
 //            .addConverterFactory(RxJava2CallAdapterFactory)
             .build()
         timeApi = retrofit.create(TimeApi::class.java)
+        userApi = retrofit.create(UserAPI::class.java)
     }
 
     private suspend fun <T> Call<T>.await(): T {

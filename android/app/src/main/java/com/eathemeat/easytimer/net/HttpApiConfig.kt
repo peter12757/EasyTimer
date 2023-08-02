@@ -3,10 +3,10 @@ class HttpApiConfig : HashMap<String,Any>() {
 
     companion object {
 
-        val KEY_TIME_BASE_URL:String = "KEY_TIME_BASE_URL"
+        val KEY_BASE_URL:String = "KEY_BASE_URL"
     }
     init {
-        this.put(KEY_TIME_BASE_URL,"http://192.168.1.1:8000")
+        this.put(KEY_BASE_URL,"http://192.168.0.19:8000")
 
     }
 
