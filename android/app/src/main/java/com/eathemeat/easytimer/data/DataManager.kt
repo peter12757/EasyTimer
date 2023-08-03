@@ -173,7 +173,13 @@ class DataManager {
     fun registerUser(passPort:String, passWord:String, phone:String , nickname: String): User {
         if (user.Id >0) return user
         if (TextUtils.isEmpty(passWord) || TextUtils.isEmpty(passPort) || TextUtils.isEmpty(nickname)) throw NullPointerException("something wrpng")
-        HttpApiManager.userApi.register(passPort,passWord,phone,nickname)
+        suspend {
+            try {
+                var result = HttpApiManager.userApi.register(passPort,passWord,phone,nickname)
+
+            }
+        }
+
     }
 
 }

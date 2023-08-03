@@ -13,7 +13,7 @@ import retrofit2.http.POST
 interface UserAPI {
 
     @POST("/user/register")
-    fun register(passport: String, password: String,phone:String,nickName:String): Call<User>
+    suspend fun register(passport: String, password: String,phone:String,nickName:String): Call<User>
 
     @GET("/user/signin")
     fun signIn(passport: String, password: String,phone:String): Call<User>
