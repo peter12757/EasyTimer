@@ -1,7 +1,7 @@
 package calendarnotes
 
 import (
-	"EasyTime/internal/model"
+	"ProjectRoot/internal/model"
 	"context"
 )
 

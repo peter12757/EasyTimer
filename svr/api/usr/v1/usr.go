@@ -4,7 +4,7 @@ import (
 	"github.com/gogf/gf/v2/frame/g"
 )
 
-type SignUpReq struct {
+type RegisterReq struct {
 	g.Meta    `path:"/user/signup" method:"get" tags:"UserServices" summary:"sign up"`
 	Passport  string `v:"required"`
 	Password  string `v:"required"`
@@ -13,7 +13,7 @@ type SignUpReq struct {
 	LoginType int    `v:"required"`
 }
 
-type SignUpRes struct {
+type RegisterRes struct {
 	Code int    `v:"required"`
 	Msg  string `v:"required"`
 }

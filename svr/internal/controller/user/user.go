@@ -13,8 +13,8 @@ func New() *Controller {
 	return &Controller{}
 }
 
-func (c *Controller) SignUp(ctx context.Context, req *v1.SignUpReq) (res *v1.SignUpRes, err error) {
-	err = service.User().Create(ctx, model.UserCreateInput{
+func (c *Controller) Register(ctx context.Context, req *v1.RegisterReq) (res *v1.RegisterRes, err error) {
+	err = service.User().Register(ctx, model.UserRegisterInput{
 		Passport: req.Passport,
 		Password: req.Password,
 		NickName: req.NickName,

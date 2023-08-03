@@ -12,7 +12,7 @@ import (
 
 type (
 	IUser interface {
-		Create(ctx context.Context, in model.UserCreateInput) (err error)
+		Register(ctx context.Context, in model.UserRegisterInput) (err error)
 		SignIn(ctx context.Context, in model.UserSignInput) (err error)
 		IsPassportAvilable(ctx context.Context, passport string) (bool, error)
 	}

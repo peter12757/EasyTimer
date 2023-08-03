@@ -11,6 +11,7 @@ import (
 
 	"github.com/gogf/gf/v2/database/gdb"
 	"github.com/gogf/gf/v2/errors/gerror"
+	"github.com/gogf/gf/v2/os/gtime"
 )
 
 type (
@@ -25,7 +26,7 @@ func New() *sUser {
 	return &sUser{}
 }
 
-func (s *sUser) Create(ctx context.Context, in model.UserCreateInput) (err error) {
+func (s *sUser) Register(ctx context.Context, in model.UserRegisterInput) (err error) {
 	if in.NickName == "" {
 		in.NickName = in.Passport
 	}
@@ -41,10 +42,12 @@ func (s *sUser) Create(ctx context.Context, in model.UserCreateInput) (err error
 	}
 	return dao.User.Transaction(ctx, func(ctx context.Context, tx gdb.TX) error {
 		_, err = dao.User.Ctx(ctx).Data(do.User{
-			Passport: in.Passport,
-			Password: in.Password,
-			Nickname: in.NickName,
-			Phone:    in.Phone,
+			CreateTime: gtime.Now(),
+			Updatetime: gtime.Now(),
+			Passport:   in.Passport,
+			Password:   in.Password,
+			Nickname:   in.NickName,
+			Phone:      in.Phone,
 		}).Insert()
 		return err
 	})
@@ -59,7 +62,7 @@ func (s *sUser) SignIn(ctx context.Context, in model.UserSignInput) (err error) 
 	if err != nil {
 
 		return err
-	} 
+	}
 	if user == nil {
 		return gerror.New(`Passport or Password not correct`)
 	}

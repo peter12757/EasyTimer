@@ -1,6 +1,6 @@
 package model
 
-type UserCreateInput struct {
+type UserRegisterInput struct {
 	Passport string
 	Password string
 	Phone    string

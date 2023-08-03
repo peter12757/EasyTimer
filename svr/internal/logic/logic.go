@@ -5,6 +5,7 @@
 package logic
 
 import (
+	_ "ProjectRoot/internal/logic/CalendarNotes"
 	_ "ProjectRoot/internal/logic/middleware"
 	_ "ProjectRoot/internal/logic/user"
 )
