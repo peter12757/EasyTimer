@@ -164,10 +164,10 @@ class DataManager {
 
     fun notifyDataChanged(task: Task) {
         check()
-        OtherThread.sInstance.post {
-            var dao = db.taskDao()
-            dao.updateTask(task)
-        }
+//        OtherThread.sInstance.post {=-
+//            var dao = db.taskDao()
+//            dao.updateTask(task)
+//        }
     }
 
     fun registerUser(passPort:String, passWord:String, phone:String , nickname: String): User {
