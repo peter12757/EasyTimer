@@ -12,5 +12,7 @@ class AlertWinManager {
 
     fun checkPermission(context: Context): Boolean {
 
+
+        return false;
     }
 }
