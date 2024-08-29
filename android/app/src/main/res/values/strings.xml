@@ -3,4 +3,16 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <string name="nav_home">HOME</string>
+    <string name="nav_add">ADD NOTIFICATION</string>
+    <string name="nav_recorders">RECORDERS</string>
+    <string name="nav_setting">SETTING</string>
+
+    <string-array name="nav_host">
+        <item>list</item>
+        <item>add</item>
+        <item>recorders</item>
+        <item>setting</item>
+    </string-array>
 </resources>
