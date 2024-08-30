@@ -1,11 +1,13 @@
 package com.eathemeat.easytimer
 
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteDefaults
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -13,18 +15,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.eathemeat.easytimer.databinding.ActivityMainBinding
+import com.eathemeat.transkit.main.ui.theme.EasyTimerTheme
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,32 +35,40 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContent {
+            EasyTimerTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    HomePage()
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+                }
+            }
+        }
 
     }
 }
 
 @Composable
-fun ListPage(navController: NavHostController) {
-
+fun ListPage() {
+    Text(text = "ListPage")
 }
 
 @Composable
-fun AddPage(navController: NavHostController) {
-
+fun AddPage() {
+    Text(text = "AddPage")
 }
 
 @Composable
-fun RecoderPage(navController: NavHostController) {
-
+fun RecoderPage() {
+    Text(text = "RecoderPage")
 }
 
 
 @Composable
-fun SettingPage(navController: NavHostController) {
-
+fun SettingPage() {
+    Text(text = "SettingPage")
 }
 
 
@@ -68,28 +77,7 @@ fun SettingPage(navController: NavHostController) {
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun HomePage() {
-    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
-
-    // [START android_compose_adaptivelayouts_sample_navigation_suite_scaffold_container_color]
-    NavigationSuiteScaffold(
-        navigationSuiteItems = { /* ... */ },
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
-    ) {
-        // Content...
-    }
-    // [END android_compose_adaptivelayouts_sample_navigation_suite_scaffold_container_color]
-
-    // [START android_compose_adaptivelayouts_sample_navigation_suite_scaffold_suite_colors]
-    NavigationSuiteScaffold(
-        navigationSuiteItems = { /* ... */ },
-        navigationSuiteColors = NavigationSuiteDefaults.colors(
-            navigationBarContainerColor = Color.Transparent,
-        )
-    ) {
-        // Content...
-    }
-    // [END android_compose_adaptivelayouts_sample_navigation_suite_scaffold_suite_colors]
+    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.LIST) }
 
     // [START android_compose_adaptivelayouts_sample_navigation_suite_scaffold_item_colors]
     val myNavigationSuiteItemColors = NavigationSuiteDefaults.itemColors(
@@ -101,11 +89,11 @@ fun HomePage() {
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
-            AppDestinations.entries.forEach {
+            for (it in AppDestinations.values()) {
                 item(
                     icon = {
                         Icon(
-                            vectorResource(),
+                            painter = painterResource(id = it.icon),
                             contentDescription = stringResource(it.contentDescription)
                         )
                     },
@@ -115,11 +103,17 @@ fun HomePage() {
                     colors = myNavigationSuiteItemColors,
                 )
             }
-        },
+        },navigationSuiteColors = NavigationSuiteDefaults.colors(
+            navigationBarContainerColor = Color.Transparent,
+        )
     ) {
-        // Content...
+        when (currentDestination) {
+            AppDestinations.LIST -> ListPage()
+            AppDestinations.ADD -> AddPage()
+            AppDestinations.RECORDERS -> RecoderPage()
+            AppDestinations.SETTING -> SettingPage()
+        }
     }
-    // [END android_compose_adaptivelayouts_sample_navigation_suite_scaffold_item_colors]
 
 }
 
