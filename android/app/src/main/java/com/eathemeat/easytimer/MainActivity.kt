@@ -25,6 +25,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import com.eathemeat.easytimer.databinding.ActivityMainBinding
+import com.eathemeat.easytimer.page.AddPage
 import com.eathemeat.transkit.main.ui.theme.EasyTimerTheme
 
 class MainActivity : AppCompatActivity() {
@@ -55,10 +56,7 @@ fun ListPage() {
     Text(text = "ListPage")
 }
 
-@Composable
-fun AddPage() {
-    Text(text = "AddPage")
-}
+
 
 @Composable
 fun RecoderPage() {
