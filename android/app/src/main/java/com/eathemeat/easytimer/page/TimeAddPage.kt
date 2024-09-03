@@ -3,6 +3,8 @@ package com.eathemeat.easytimer.page
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -42,7 +45,8 @@ fun TimeAddPage() {
             bottom.linkTo(parent.bottom)
         }) {
             items(defTimeMap.keys.toList()) {
-                Text(text = it, fontSize = TextUnit(25f, TextUnitType.Sp))
+                Text(text = it, modifier = Modifier.fillMaxSize().padding(20.dp)
+                    , fontSize = TextUnit(25f, TextUnitType.Sp), textAlign = TextAlign.Center)
             }
         }
         Button(onClick = {
@@ -56,7 +60,7 @@ fun TimeAddPage() {
             }
             .background(Color.Blue)
             .clip(RoundedCornerShape(10.dp))) {
-            Text(text = "Add", fontSize = TextUnit(20f, TextUnitType.Sp))
+            Text(text = "Add", modifier = Modifier.fillMaxWidth(), fontSize = TextUnit(20f, TextUnitType.Sp), textAlign = TextAlign.Center)
         }
 
     }
