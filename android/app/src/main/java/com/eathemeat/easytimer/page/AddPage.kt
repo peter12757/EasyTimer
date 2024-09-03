@@ -25,12 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 
-
-val TAG = "AddPage"
 @Composable
 fun AddPage() {
+    val TAG = "AddPage"
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-        var (time,date) = createRefs()
+        val (time,date) = createRefs()
             ConstraintLayout(modifier = Modifier
                 .constrainAs(time) {
                     top.linkTo(parent.top, 10.dp)
@@ -41,7 +40,7 @@ fun AddPage() {
                 .padding(50.dp)
                 .background(Color.Yellow)
                 .clip(RoundedCornerShape(10.dp))) {
-                var (title,add,detail) = createRefs()
+                val (title,add,detail) = createRefs()
                 Text(text = "Time", modifier = Modifier.constrainAs(title) {
                     top.linkTo(parent.top, 10.dp)
                     start.linkTo(parent.start, 10.dp)
@@ -104,7 +103,7 @@ fun AddPage() {
                 top.linkTo(add.top)
                 start.linkTo(add.end, 10.dp)
                 end.linkTo(title.end, 10.dp)
-                bottom.linkTo(parent.bottom, 10.dp)
+                bottom.linkTo(parent.bottom, 10.dp )
             }) {
                 Text(text = "Detail")
             }
