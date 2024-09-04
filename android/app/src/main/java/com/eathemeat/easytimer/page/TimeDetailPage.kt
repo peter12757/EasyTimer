@@ -1,5 +1,6 @@
 package com.eathemeat.easytimer.page
 
+import android.os.SystemClock
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -58,5 +59,12 @@ fun TimeDetailPage(times:List<ClockInfo>) {
 @Preview(widthDp = 488, heightDp = 1024)
 @Composable
 fun TimeDetailPagePreview() {
-    TimeDetailPage(listOf())
+    val testData = mutableListOf<ClockInfo>().apply {
+        add(ClockInfo(SystemClock.elapsedRealtime()+1000*60))
+        add(ClockInfo(SystemClock.elapsedRealtime()+1000*60*2))
+        add(ClockInfo(SystemClock.elapsedRealtime()+1000*60*3))
+        add(ClockInfo(SystemClock.elapsedRealtime()+1000*60*4))
+        add(ClockInfo(SystemClock.elapsedRealtime()+1000*60*5))
+    }
+    TimeDetailPage(testData)
 }

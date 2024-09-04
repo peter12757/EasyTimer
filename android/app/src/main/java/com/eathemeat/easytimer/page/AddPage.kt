@@ -1,5 +1,6 @@
 package com.eathemeat.easytimer.page
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,7 +25,9 @@ import androidx.compose.ui.unit.TextUnitType.Companion.Sp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
+import com.eathemeat.easytimer.MainViewModel
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun AddPage() {
     val TAG = "AddPage"
@@ -35,11 +38,11 @@ fun AddPage() {
                     top.linkTo(parent.top, 10.dp)
                     start.linkTo(parent.start, 10.dp)
                     end.linkTo(parent.end, 10.dp)
-                    bottom.linkTo(date.top, 10.dp)
+                    bottom.linkTo(date.top)
                 }
-                .padding(50.dp)
+                .padding(10.dp)
                 .background(Color.Yellow)
-                .clip(RoundedCornerShape(10.dp))) {
+                .clip(RoundedCornerShape(20.dp))) {
                 val (title,add,detail) = createRefs()
                 Text(text = "Time", modifier = Modifier.constrainAs(title) {
                     top.linkTo(parent.top, 10.dp)
@@ -71,12 +74,11 @@ fun AddPage() {
             }
         ConstraintLayout(modifier = Modifier
             .constrainAs(date) {
-                top.linkTo(time.bottom, 10.dp)
+                top.linkTo(time.bottom)
                 start.linkTo(time.start)
                 end.linkTo(time.end)
-                bottom.linkTo(parent.bottom, 10.dp)
             }
-            .padding(50.dp)
+            .padding(10.dp)
             .background(Color.Green)
             .clip(RoundedCornerShape(10.dp))) {
             var (title,add,detail) = createRefs()

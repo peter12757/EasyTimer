@@ -2,9 +2,8 @@ package com.eathemeat.easytimer.data
 
 import android.os.SystemClock
 
-class ClockInfo {
+class ClockInfo(var time:Long = 0,var title:String = getDefTitle(time)) {
 
-    var time:Long = 0
 
     fun getResetTime(): Long {
         var now = SystemClock.elapsedRealtime()
@@ -18,4 +17,9 @@ class ClockInfo {
         var hour = resetTime/60/60
         return "$hour:$min:$seds"
     }
+}
+
+fun getDefTitle(time: Long): String {
+    // TODO:
+    return "todo"
 }

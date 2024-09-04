@@ -9,8 +9,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -20,6 +25,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.widget.Guideline
 
 
 val defTimeMap = mutableMapOf<String,Int>().apply {
@@ -36,6 +42,9 @@ val defTimeMap = mutableMapOf<String,Int>().apply {
 @Composable
 fun TimeAddPage() {
     val TAG = "TimeAddPage"
+    var addTime by remember {
+        mutableStateOf(0)
+    }
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         var (list,add) = createRefs()
         LazyColumn(modifier = Modifier.constrainAs(list){
@@ -45,8 +54,25 @@ fun TimeAddPage() {
             bottom.linkTo(parent.bottom)
         }) {
             items(defTimeMap.keys.toList()) {
-                Text(text = it, modifier = Modifier.fillMaxSize().padding(20.dp)
-                    , fontSize = TextUnit(25f, TextUnitType.Sp), textAlign = TextAlign.Center)
+
+                ConstraintLayout(modifier = Modifier
+                    .fillMaxSize()) {
+                    var (check,text) = createRefs()
+                    val centerLine = createGuidelineFromStart(0.5f)
+                    Checkbox(checked = addTime == defTimeMap[it], onCheckedChange = { checked->
+                        if (checked) {
+                            addTime = defTimeMap[it]!!
+                        }
+                    }, modifier = Modifier.constrainAs(check){
+                        end.linkTo(centerLine,5.dp)
+
+                    })
+                    Text(text = it, modifier = Modifier.constrainAs(text){
+                        start.linkTo(centerLine,5.dp)
+                    }.padding(10.dp)
+                        , fontSize = TextUnit(25f, TextUnitType.Sp), textAlign = TextAlign.Center)
+                }
+
             }
         }
         Button(onClick = {
@@ -54,9 +80,9 @@ fun TimeAddPage() {
          }, modifier = Modifier
             .constrainAs(add) {
                 top.linkTo(list.bottom, 20.dp)
-                start.linkTo(parent.start)
-                end.linkTo(parent.end)
-                bottom.linkTo(parent.bottom)
+                start.linkTo(parent.start, 20.dp)
+                end.linkTo(parent.end, 20.dp)
+                bottom.linkTo(parent.bottom, 20.dp)
             }
             .background(Color.Blue)
             .clip(RoundedCornerShape(10.dp))) {

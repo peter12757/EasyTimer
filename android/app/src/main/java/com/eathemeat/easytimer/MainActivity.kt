@@ -23,6 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavHostController
 import com.eathemeat.easytimer.databinding.ActivityMainBinding
 import com.eathemeat.easytimer.page.AddPage
@@ -30,12 +32,12 @@ import com.eathemeat.transkit.main.ui.theme.EasyTimerTheme
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
-
+    lateinit var viewModel: MainViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         setContent {
             EasyTimerTheme {
                 Surface(
