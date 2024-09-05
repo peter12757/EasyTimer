@@ -1,4 +1,4 @@
-package com.eathemeat.easytimer.page
+package com.eathemeat.easytimer.screen.time
 
 import android.os.SystemClock
 import android.util.Log

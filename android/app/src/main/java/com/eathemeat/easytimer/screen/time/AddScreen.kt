@@ -1,35 +1,26 @@
-package com.eathemeat.easytimer.page
+package com.eathemeat.easytimer.screen.time
 
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.material3.contentColorFor
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
-import androidx.compose.ui.unit.TextUnitType.Companion.Sp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.ConstraintSet
-import com.eathemeat.easytimer.MainViewModel
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun AddPage() {
+fun AddScreen() {
     val TAG = "AddPage"
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         val (time,date) = createRefs()
@@ -116,6 +107,6 @@ fun AddPage() {
 
 @Preview(widthDp = 488, heightDp = 1024)
 @Composable
-fun AddPagePreview() {
-   AddPage()
+fun AddScreenPreview() {
+    AddScreen()
 }

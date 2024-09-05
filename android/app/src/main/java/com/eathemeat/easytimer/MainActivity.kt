@@ -18,16 +18,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavHostController
-import com.eathemeat.easytimer.databinding.ActivityMainBinding
-import com.eathemeat.easytimer.page.AddPage
+import com.eathemeat.easytimer.screen.ListScreen
+import com.eathemeat.easytimer.screen.RecorderScreen
+import com.eathemeat.easytimer.screen.SettingScreen
+import com.eathemeat.easytimer.screen.time.AddScreen
 import com.eathemeat.transkit.main.ui.theme.EasyTimerTheme
 
 class MainActivity : AppCompatActivity() {
@@ -44,8 +42,7 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomePage()
-
+                    HomeScreen()
                 }
             }
         }
@@ -54,31 +51,8 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun ListPage() {
-    Text(text = "ListPage")
-}
-
-
-
-@Composable
-fun RecoderPage() {
-    Text(text = "RecoderPage")
-}
-
-
-@Composable
-fun SettingPage() {
-    Text(text = "SettingPage")
-}
-
-
-
-
-@OptIn(ExperimentalStdlibApi::class)
-@Composable
-fun HomePage() {
+fun HomeScreen() {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.LIST) }
-
     // [START android_compose_adaptivelayouts_sample_navigation_suite_scaffold_item_colors]
     val myNavigationSuiteItemColors = NavigationSuiteDefaults.itemColors(
         navigationBarItemColors = NavigationBarItemDefaults.colors(
@@ -108,10 +82,10 @@ fun HomePage() {
         )
     ) {
         when (currentDestination) {
-            AppDestinations.LIST -> ListPage()
-            AppDestinations.ADD -> AddPage()
-            AppDestinations.RECORDERS -> RecoderPage()
-            AppDestinations.SETTING -> SettingPage()
+            AppDestinations.LIST -> ListScreen()
+            AppDestinations.ADD -> AddScreen()
+            AppDestinations.RECORDERS -> RecorderScreen()
+            AppDestinations.SETTING -> SettingScreen()
         }
     }
 
@@ -121,5 +95,5 @@ fun HomePage() {
 @Preview
 @Composable
 fun HomePagePre() {
-    HomePage()
+    HomeScreen()
 }

@@ -1,4 +1,4 @@
-package com.eathemeat.easytimer.page
+package com.eathemeat.easytimer.screen.time
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.widget.Guideline
 
 
 val defTimeMap = mutableMapOf<String,Int>().apply {
