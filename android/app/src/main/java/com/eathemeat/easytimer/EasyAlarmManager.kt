@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.SystemClock
 import android.util.Log
 import java.util.Calendar
@@ -15,6 +16,7 @@ object EasyAlarmManager {
     fun init(app: Application): EasyAlarmManager {
         mAppCtx = app
         manager = app.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        mAppCtx.registerReceiver(EasyAlarmReceive(), IntentFilter())
         return this
     }
 
@@ -33,10 +35,12 @@ object EasyAlarmManager {
 
     fun addAlarm(time: Long): Unit {
         var alarmIntent = Intent(mAppCtx,EasyAlarmReceive::class.java).let {
-            PendingIntent.getBroadcast(mAppCtx,0,it, PendingIntent.FLAG_IMMUTABLE)
+            PendingIntent.getBroadcast(mAppCtx,0,it,
+                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         }
 //        alarmIntentMap.put()
-        manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,SystemClock.elapsedRealtime()+time,alarmIntent)
+        Log.d(TAG, "addAlarm() called with: time = $time")
+        manager.setWindow(AlarmManager.RTC_WAKEUP,SystemClock.elapsedRealtime()+time,0,alarmIntent)
     }
 
     fun addAlarm(calendar: Calendar,repeatTime:Long = AlarmManager.INTERVAL_FIFTEEN_MINUTES): Unit {

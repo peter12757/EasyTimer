@@ -41,5 +41,5 @@ class MainViewModel(var isComposeTest:Boolean =false): ViewModel() {
 }
 
 enum class AddScreenType {
-    ADD,TIMEADD,TIMEDETAIL,DATEADD,DATEDETAIL
+    ADD,TIMEADD,TIMEDETAIL,DATEADD,DATEDETAIL,
 }

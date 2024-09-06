@@ -25,24 +25,34 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.eathemeat.easytimer.AddScreenType
+import com.eathemeat.easytimer.EasyAlarmManager
+import com.eathemeat.easytimer.MainViewModel
+
+val millisecond = 1000L
+val second = 60L
+//val minute = millisecond*second
+val minute = 100L
 
 
-val defTimeMap = mutableMapOf<String,Int>().apply {
-    put("1分钟",1000*60)
-    put("3分钟",1000*60*3)
-    put("4分钟",1000*60*4)
-    put("5分钟",1000*60*5)
-    put("10分钟",1000*60*10)
-    put("30分钟",1000*60*30)
-    put("1小时",1000*60*60)
+val defTimeMap = mutableMapOf<String,Long>().apply {
+    put("1分钟",minute)
+    put("3分钟",minute*3)
+    put("4分钟",minute*4)
+    put("5分钟",minute*5)
+    put("10分钟",minute*10)
+    put("30分钟",minute*30)
+    put("1小时",minute*60)
 
 }
 
 @Composable
 fun TimeAddScreen() {
     val TAG = "TimeAddPage"
+    val viewModel = viewModel(modelClass = MainViewModel::class.java)
     var addTime by remember {
-        mutableStateOf(0)
+        mutableStateOf(0L)
     }
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         var (list,add) = createRefs()
@@ -66,9 +76,11 @@ fun TimeAddScreen() {
                         end.linkTo(centerLine,5.dp)
 
                     })
-                    Text(text = it, modifier = Modifier.constrainAs(text){
-                        start.linkTo(centerLine,5.dp)
-                    }.padding(10.dp)
+                    Text(text = it, modifier = Modifier
+                        .constrainAs(text) {
+                            start.linkTo(centerLine, 5.dp)
+                        }
+                        .padding(10.dp)
                         , fontSize = TextUnit(25f, TextUnitType.Sp), textAlign = TextAlign.Center)
                 }
 
@@ -76,6 +88,11 @@ fun TimeAddScreen() {
         }
         Button(onClick = {
             Log.d(TAG, "TimeAddPage() called")
+            if (addTime>0) {
+                EasyAlarmManager.addAlarm(addTime)
+                viewModel.screenType.value = AddScreenType.ADD
+            }
+
          }, modifier = Modifier
             .constrainAs(add) {
                 top.linkTo(list.bottom, 20.dp)
@@ -83,7 +100,6 @@ fun TimeAddScreen() {
                 end.linkTo(parent.end, 20.dp)
                 bottom.linkTo(parent.bottom, 20.dp)
             }
-            .background(Color.Blue)
             .clip(RoundedCornerShape(10.dp))) {
             Text(text = "Add", modifier = Modifier.fillMaxWidth(), fontSize = TextUnit(20f, TextUnitType.Sp), textAlign = TextAlign.Center)
         }
