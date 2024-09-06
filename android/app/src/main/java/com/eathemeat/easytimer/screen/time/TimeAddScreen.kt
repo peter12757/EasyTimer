@@ -39,7 +39,7 @@ val defTimeMap = mutableMapOf<String,Int>().apply {
 }
 
 @Composable
-fun TimeAddPage() {
+fun TimeAddScreen() {
     val TAG = "TimeAddPage"
     var addTime by remember {
         mutableStateOf(0)
@@ -94,5 +94,5 @@ fun TimeAddPage() {
 @Preview(widthDp = 488, heightDp = 1024)
 @Composable
 fun TimeAddPagePreview() {
-    TimeAddPage()
+    TimeAddScreen()
 }

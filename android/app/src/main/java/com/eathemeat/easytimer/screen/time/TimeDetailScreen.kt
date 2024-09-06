@@ -1,17 +1,18 @@
 package com.eathemeat.easytimer.screen.time
 
-import android.os.SystemClock
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -21,11 +22,16 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.eathemeat.easytimer.data.ClockInfo
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.eathemeat.easytimer.MainViewModel
 
 @Composable
-fun TimeDetailPage(times:List<ClockInfo>) {
+fun TimeDetailPage() {
     val TAG = "TimeAddPage"
+    var viewModel = viewModel(modelClass = MainViewModel::class.java)
+    var times by rememberSaveable {
+        viewModel.timerList
+    }
     ConstraintLayout(modifier = Modifier.fillMaxSize()) {
         var (list,add) = createRefs()
         LazyColumn(modifier = Modifier.constrainAs(list){
@@ -34,8 +40,11 @@ fun TimeDetailPage(times:List<ClockInfo>) {
             end.linkTo(parent.end)
             bottom.linkTo(parent.bottom)
         }) {
-            items(times) {
-                Text(text = "闹钟剩余时间：${it.getResetTimeStr()}", modifier = Modifier.fillMaxSize().padding(20.dp)
+            items(times.size) {
+                val item = times[it]
+                Text(text = "闹钟剩余时间：${item.getResetTimeStr()}", modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp)
                     , fontSize = TextUnit(25f, TextUnitType.Sp), textAlign = TextAlign.Center)
             }
         }
@@ -59,12 +68,5 @@ fun TimeDetailPage(times:List<ClockInfo>) {
 @Preview(widthDp = 488, heightDp = 1024)
 @Composable
 fun TimeDetailPagePreview() {
-    val testData = mutableListOf<ClockInfo>().apply {
-        add(ClockInfo(SystemClock.elapsedRealtime()+1000*60))
-        add(ClockInfo(SystemClock.elapsedRealtime()+1000*60*2))
-        add(ClockInfo(SystemClock.elapsedRealtime()+1000*60*3))
-        add(ClockInfo(SystemClock.elapsedRealtime()+1000*60*4))
-        add(ClockInfo(SystemClock.elapsedRealtime()+1000*60*5))
-    }
-    TimeDetailPage(testData)
+    TimeDetailPage()
 }
