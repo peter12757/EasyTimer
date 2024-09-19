@@ -6,10 +6,12 @@ import android.content.res.AssetManager
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.HandlerThread
+import android.provider.MediaStore.Audio.Media
+import androidx.annotation.Nullable
 
 object ClockMediaPlayer {
 
-    var mediaPlayer:MediaPlayer = MediaPlayer()
+    var mediaPlayer:MediaPlayer? = null
 
     val fileName = "CastleintheSky.mp3"
 
@@ -40,11 +42,14 @@ object ClockMediaPlayer {
         var file = getAssertFile(fileName)
         file?.run {
             playHandler?:let {
-                playThread.start()
+                if (!playThread.isAlive) playThread.start()
                 playHandler = Handler(playThread.looper).apply {
                     post(){
-                        //play
-                        with(mediaPlayer){
+                        mediaPlayer?.run {
+                            stop()
+                            release()
+                        }
+                        mediaPlayer = MediaPlayer().apply {
                             setDataSource(file)
                             prepare()
                             start()
@@ -59,9 +64,12 @@ object ClockMediaPlayer {
     fun stop(): Unit {
         playHandler?.run {
             post(){
-                mediaPlayer.stop()
+                mediaPlayer?.run {
+                    stop()
+                    release()
+                }
+                mediaPlayer = null
                 removeCallbacksAndMessages(null)
-                playThread.quitSafely()
                 playHandler = null
             }
         }
