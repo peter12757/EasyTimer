@@ -2,15 +2,14 @@ package com.eathemeat.easytimer
 
 import android.app.Application
 import android.content.res.AssetFileDescriptor
+import android.content.res.AssetManager
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.HandlerThread
-import android.os.MessageQueue.IdleHandler
-import java.io.File
 
-class ClockMediaPlayer(val appCtx:Application) {
+object ClockMediaPlayer {
 
-    var player:MediaPlayer = MediaPlayer()
+    var mediaPlayer:MediaPlayer = MediaPlayer()
 
     val fileName = "CastleintheSky.mp3"
 
@@ -18,9 +17,14 @@ class ClockMediaPlayer(val appCtx:Application) {
 
     var playHandler:Handler? = null
 
+    lateinit var appCtx:Application
+    lateinit var assertMgr:AssetManager
 
+    fun init(ctx: Application): Unit {
+        appCtx = ctx
+        assertMgr = appCtx.resources.assets
+    }
 
-    var assertMgr = appCtx.resources.assets
 
     fun getAssertFile(fileName: String): AssetFileDescriptor? {
         var files = assertMgr.list("")
@@ -40,6 +44,12 @@ class ClockMediaPlayer(val appCtx:Application) {
                 playHandler = Handler(playThread.looper).apply {
                     post(){
                         //play
+                        with(mediaPlayer){
+                            setDataSource(file)
+                            prepare()
+                            start()
+                            isLooping =true
+                        }
                     }
                 }
             }
@@ -48,10 +58,14 @@ class ClockMediaPlayer(val appCtx:Application) {
 
     fun stop(): Unit {
         playHandler?.run {
-            removeCallbacksAndMessages(null)
-            playThread.quitSafely()
+            post(){
+                mediaPlayer.stop()
+                removeCallbacksAndMessages(null)
+                playThread.quitSafely()
+                playHandler = null
+            }
         }
-        playHandler = null
+
     }
 
 

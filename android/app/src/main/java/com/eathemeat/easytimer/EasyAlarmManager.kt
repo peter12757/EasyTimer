@@ -68,9 +68,23 @@ object EasyAlarmManager {
     class EasyAlarmReceive : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             Log.d(TAG, "onReceive() called with: context = $context, intent = $intent")
+            if (!listeners.isEmpty()) {
+                listeners.map {
+                    it.onTimeUp()
+                }
+            }
         }
 
     }
 
+    private var listeners = mutableListOf<OnTimeUpListener>()
+
+    fun registerTimeUpListener(listener: OnTimeUpListener): Unit {
+        listeners.add(listener)
+    }
+
+    interface OnTimeUpListener {
+        fun onTimeUp(): Unit
+    }
 
 }
