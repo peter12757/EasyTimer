@@ -1,6 +1,8 @@
 package com.eathemeat.easytimer
 
 import android.os.Bundle
+import android.view.Window
+import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +17,7 @@ import com.eathemeat.transkit.main.ui.theme.EasyTimerTheme
 class AlarmActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+       supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         setContent {
             EasyTimerTheme {
                 Surface(

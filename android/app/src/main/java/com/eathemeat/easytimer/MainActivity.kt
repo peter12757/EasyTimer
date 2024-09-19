@@ -1,6 +1,7 @@
 package com.eathemeat.easytimer
 
 import android.os.Bundle
+import android.view.Window
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,6 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         setContent {
             EasyTimerTheme {

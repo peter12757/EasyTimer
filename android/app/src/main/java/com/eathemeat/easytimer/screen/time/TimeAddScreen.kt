@@ -32,8 +32,8 @@ import com.eathemeat.easytimer.MainViewModel
 
 val millisecond = 1000L
 val second = 60L
-//val minute = millisecond*second
-val minute = 100L
+val minute = millisecond*second
+//val minute = 100L
 
 
 val defTimeMap = mutableMapOf<String,Long>().apply {
