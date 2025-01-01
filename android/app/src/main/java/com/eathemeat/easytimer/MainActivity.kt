@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
 @Composable
 fun HomeScreen() {
-    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.LIST) }
+    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
     // [START android_compose_adaptivelayouts_sample_navigation_suite_scaffold_item_colors]
     val myNavigationSuiteItemColors = NavigationSuiteDefaults.itemColors(
         navigationBarItemColors = NavigationBarItemDefaults.colors(
@@ -84,7 +84,7 @@ fun HomeScreen() {
         )
     ) {
         when (currentDestination) {
-            AppDestinations.LIST -> ListScreen()
+            AppDestinations.HOME -> ListScreen()
             AppDestinations.ADD -> AddScreen()
             AppDestinations.RECORDERS -> RecorderScreen()
             AppDestinations.SETTING -> SettingScreen()
