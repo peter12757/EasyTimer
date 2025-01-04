@@ -23,7 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
-import com.eathemeat.easytimer.screen.ListScreen
+import com.eathemeat.easytimer.screen.HomeScreen
 import com.eathemeat.easytimer.screen.RecorderScreen
 import com.eathemeat.easytimer.screen.SettingScreen
 import com.eathemeat.easytimer.screen.time.AddScreen
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen()
+                    MainScreen()
                 }
             }
         }
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 @Composable
-fun HomeScreen() {
+fun MainScreen() {
     var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
     // [START android_compose_adaptivelayouts_sample_navigation_suite_scaffold_item_colors]
     val myNavigationSuiteItemColors = NavigationSuiteDefaults.itemColors(
@@ -84,7 +84,7 @@ fun HomeScreen() {
         )
     ) {
         when (currentDestination) {
-            AppDestinations.HOME -> ListScreen()
+            AppDestinations.HOME -> HomeScreen()
             AppDestinations.ADD -> AddScreen()
             AppDestinations.RECORDERS -> RecorderScreen()
             AppDestinations.SETTING -> SettingScreen()
@@ -95,6 +95,6 @@ fun HomeScreen() {
 
 @Preview
 @Composable
-fun HomePagePre() {
+fun MainPagePre() {
     HomeScreen()
 }

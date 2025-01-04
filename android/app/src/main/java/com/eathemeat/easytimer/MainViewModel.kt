@@ -1,14 +1,33 @@
 package com.eathemeat.easytimer
 
+import android.os.Looper
 import android.os.SystemClock
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.Recomposer
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.eathemeat.easytimer.data.ClockInfo
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.text.Format
+import java.text.SimpleDateFormat
+import java.util.Date
 
-class MainViewModel(var isComposeTest:Boolean =false): ViewModel() {
+class MainViewModel(var isComposeTest:Boolean =false): ViewModel(),
+    TimeGetter.OnTimeUpdateListener {
+
+
+    val TAG = MainViewModel::class.java.name
+    lateinit var  time:TimeGetter
+    var timeNow by mutableStateOf(Pair<String,String>("1989-11-28","00:00:00"))
+
+    init {
+        time = TimeGetter(null)
+        time.listener = this
+        time.start()
+
+    }
 
     var alarmList = MutableStateFlow(mutableListOf<ClockInfo>().apply {
         if (isComposeTest) {
@@ -36,6 +55,16 @@ class MainViewModel(var isComposeTest:Boolean =false): ViewModel() {
     var timerList = mutableStateOf(_timeList)
 
 
+
+    fun nowStr() :Pair<String,String>{
+        var date_format = SimpleDateFormat("yyyy-MM-dd")
+        var time_format = SimpleDateFormat("HH:mm:ss")
+        return Pair<String,String>(date_format.format(Date()),time_format.format(Date()))
+    }
+
+    override fun onTimeUpdate(time: Long) {
+        timeNow = nowStr()
+    }
 
 
 }
