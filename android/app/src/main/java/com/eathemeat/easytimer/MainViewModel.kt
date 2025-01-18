@@ -2,6 +2,7 @@ package com.eathemeat.easytimer
 
 import android.os.Looper
 import android.os.SystemClock
+import android.util.Log
 import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -60,6 +61,11 @@ class MainViewModel(var isComposeTest:Boolean =false): ViewModel(),
         var date_format = SimpleDateFormat("yyyy-MM-dd")
         var time_format = SimpleDateFormat("HH:mm:ss")
         return Pair<String,String>(date_format.format(Date()),time_format.format(Date()))
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d(TAG, "onCleared: ")
     }
 
     override fun onTimeUpdate(time: Long) {

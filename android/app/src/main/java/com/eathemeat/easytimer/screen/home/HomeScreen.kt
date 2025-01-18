@@ -1,11 +1,13 @@
-package com.eathemeat.easytimer.screen
+package com.eathemeat.easytimer.screen.home
 
-import android.net.wifi.hotspot2.pps.HomeSp
+import android.widget.ImageButton
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -20,7 +22,12 @@ fun HomeScreen() {
     ConstraintLayout(modifier = Modifier
         .fillMaxSize()) {
         var centerLine = createGuidelineFromTop(0.5f)
-        var (date,time) = createRefs()
+        var (alarm,date,time) = createRefs()
+
+        Image(painter = painterResource(R.drawable.home_alarm_48px), contentDescription = "add alarm", modifier = Modifier.constrainAs(alarm){
+            
+        })
+
 
         Text(text = "Date:${viewmodule.timeNow.first}", modifier = Modifier.constrainAs(date){
             centerHorizontallyTo(parent)
@@ -30,6 +37,8 @@ fun HomeScreen() {
             centerHorizontallyTo(parent)
             top.linkTo(centerLine,10.dp)
         })
+
+
     }
 
 

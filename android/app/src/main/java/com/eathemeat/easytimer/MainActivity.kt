@@ -23,7 +23,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.ViewModelProvider
-import com.eathemeat.easytimer.screen.HomeScreen
+import com.eathemeat.easytimer.screen.home.HomeScreen
 import com.eathemeat.easytimer.screen.RecorderScreen
 import com.eathemeat.easytimer.screen.SettingScreen
 import com.eathemeat.easytimer.screen.time.AddScreen
@@ -32,12 +32,14 @@ import com.eathemeat.transkit.main.ui.theme.EasyTimerTheme
 class MainActivity : AppCompatActivity() {
 
     lateinit var viewModel: MainViewModel
+    lateinit var submodel:SubMainViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        submodel = ViewModelProvider(this).get(SubMainViewModel::class.java)
         setContent {
             EasyTimerTheme {
                 Surface(
