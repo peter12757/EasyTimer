@@ -1,7 +1,6 @@
-package com.eathemeat.easytimer.screen.time
+package com.eathemeat.easytimer.home.date
 
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,7 +17,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -32,18 +30,18 @@ import com.eathemeat.easytimer.MainViewModel
 
 val millisecond = 1000L
 val second = 60L
-val minute = millisecond*second
+val minute = millisecond * second
 //val minute = 100L
 
 
 val defTimeMap = mutableMapOf<String,Long>().apply {
-    put("1分钟",minute)
-    put("3分钟",minute*3)
-    put("4分钟",minute*4)
-    put("5分钟",minute*5)
-    put("10分钟",minute*10)
-    put("30分钟",minute*30)
-    put("1小时",minute*60)
+    put("1分钟", minute)
+    put("3分钟", minute *3)
+    put("4分钟", minute *4)
+    put("5分钟", minute *5)
+    put("10分钟", minute *10)
+    put("30分钟", minute *30)
+    put("1小时", minute *60)
 
 }
 

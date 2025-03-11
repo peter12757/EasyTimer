@@ -2,7 +2,6 @@ package com.eathemeat.easytimer
 
 import android.os.Bundle
 import android.view.Window
-import android.view.WindowManager
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.eathemeat.easytimer.event.EventType
 import com.eathemeat.easytimer.event.OnEvent
-import com.eathemeat.easytimer.screen.alarm.AlarmScreen
+import com.eathemeat.easytimer.home.comm.AlarmScreen
 import com.eathemeat.transkit.main.ui.theme.EasyTimerTheme
 
 class AlarmActivity : AppCompatActivity() {

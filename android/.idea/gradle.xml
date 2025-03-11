@@ -14,7 +14,10 @@
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
+        <option name="delegatedBuild" value="false" />
       </GradleProjectSettings>
     </option>
+
   </component>
+
 </project>

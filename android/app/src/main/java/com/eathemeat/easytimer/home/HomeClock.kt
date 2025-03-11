@@ -1,3 +1,3 @@
-package com.eathemeat.easytimer.screen.home
+package com.eathemeat.easytimer.home
 
 data class HomeClock(var id:Int,var time:Long)

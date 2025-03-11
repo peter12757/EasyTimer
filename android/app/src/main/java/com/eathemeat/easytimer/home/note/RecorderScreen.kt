@@ -1,4 +1,4 @@
-package com.eathemeat.easytimer.screen
+package com.eathemeat.easytimer.home.note
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

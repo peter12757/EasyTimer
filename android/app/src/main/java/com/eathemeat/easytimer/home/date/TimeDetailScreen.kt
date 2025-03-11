@@ -1,4 +1,4 @@
-package com.eathemeat.easytimer.screen.time
+package com.eathemeat.easytimer.home.date
 
 import android.util.Log
 import androidx.compose.foundation.background

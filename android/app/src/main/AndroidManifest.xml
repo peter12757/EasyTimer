@@ -23,7 +23,7 @@
             android:exported="true"
             android:launchMode="singleInstance"/>
         <activity
-            android:name=".MainActivity"
+            android:name=".home.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
