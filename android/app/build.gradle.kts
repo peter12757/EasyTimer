@@ -3,11 +3,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.compose)
 }
 
 android {
     namespace = "com.eathemeat.easytimer"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.eathemeat.easytimer"
@@ -63,6 +64,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.retrofit.core)
+    implementation(libs.retrofit.kotlin.serialization)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.ui.ui)

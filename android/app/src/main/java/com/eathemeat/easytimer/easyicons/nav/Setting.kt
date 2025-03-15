@@ -5,7 +5,7 @@ import androidx.compose.material.icons.materialPath
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.eathemeat.easytimer.easyicons.EasyIcons
 
-val EasyIcons.NAV.Setting: ImageVector
+val EasyIcons.NAV.Mine: ImageVector
     get() {
         if (_setting != null) {
             return _setting!!

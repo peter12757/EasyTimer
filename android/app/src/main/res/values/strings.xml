@@ -4,10 +4,10 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
 
-    <string name="nav_home">HOME</string>
-    <string name="nav_add">NEW</string>
-    <string name="nav_recorders">RECORDERS</string>
-    <string name="nav_setting">SETTING</string>
+    <string name="nav_todo">ToDo</string>
+    <string name="nav_date">Date</string>
+    <string name="nav_note">Note</string>
+    <string name="nav_mine">Mine</string>
     <string name="txt_time">Time</string>
 
     <string-array name="nav_host">
