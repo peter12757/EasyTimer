@@ -42,8 +42,8 @@ class EventsContainer(private val eventsCalendar: Calendar) {
         return events?.events ?: ArrayList()
     }
 
-    fun getEventsForMonthAndYear(month: Int, year: Int): List<Events> {
-        return eventsByMonthAndYearMap[year.toString() + "_" + month]!!
+    fun getEventsForMonthAndYear(month: Int, year: Int): List<Events>? {
+        return eventsByMonthAndYearMap[year.toString() + "_" + month]
     }
 
     fun getEventsForMonth(eventTimeInMillis: Long): List<Event> {

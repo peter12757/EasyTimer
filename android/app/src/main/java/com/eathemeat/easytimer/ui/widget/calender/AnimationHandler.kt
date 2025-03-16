@@ -1,201 +1,227 @@
 package com.eathemeat.easytimer.ui.widget.calender
 
-class AnimationHandler {
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
+import android.animation.ValueAnimator
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
+import android.view.animation.OvershootInterpolator
+import com.eathemeat.easytimer.ui.widget.calender.CalendarController.Companion.ANIMATE_INDICATORS
+import com.eathemeat.easytimer.ui.widget.calender.CalendarController.Companion.EXPAND_COLLAPSE_CALENDAR
+import com.eathemeat.easytimer.ui.widget.calender.CalendarController.Companion.EXPOSE_CALENDAR_ANIMATION
+import com.eathemeat.easytimer.ui.widget.calender.CalendarController.Companion.IDLE
+import kotlin.math.sqrt
+
+
+class AnimationHandler(val calendarController:CalendarController,val calendarView:CalendarView) {
     val  HEIGHT_ANIM_DURATION_MILLIS = 650
     val INDICATOR_ANIM_DURATION_MILLIS = 600
     var isAnimating = false
-    var  calendarController:CalendarController?
-    private CompactCalendarView compactCalendarView;
-    private CompactCalendarView.CompactCalendarAnimationListener compactCalendarAnimationListener;
 
-    AnimationHandler(CompactCalendarController compactCalendarController, CompactCalendarView compactCalendarView) {
-        this.calendarController = calendarController;
-        this.compactCalendarView = compactCalendarView;
-    }
+    var  calendarAnimationListener:CalendarView.CompactCalendarAnimationListener? = null
 
-    void setCompactCalendarAnimationListener(CompactCalendarView.CompactCalendarAnimationListener compactCalendarAnimationListener){
-        this.compactCalendarAnimationListener = compactCalendarAnimationListener;
-    }
-
-    void openCalendar() {
+    fun openCalendar() {
         if (isAnimating) {
-            return;
+            return
         }
-        isAnimating = true;
-        Animation heightAnim = getCollapsingAnimation(true);
-        heightAnim.setDuration(HEIGHT_ANIM_DURATION_MILLIS);
-        heightAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-        calendarController.setAnimationStatus(CalendarController.EXPAND_COLLAPSE_CALENDAR);
-        setUpAnimationLisForOpen(heightAnim);
-        compactCalendarView.getLayoutParams().height = 0;
-        compactCalendarView.requestLayout();
-        compactCalendarView.startAnimation(heightAnim);
+        isAnimating = true
+        val heightAnim: Animation = getCollapsingAnimation(true)
+        heightAnim.setDuration(HEIGHT_ANIM_DURATION_MILLIS.toLong())
+        heightAnim.setInterpolator(AccelerateDecelerateInterpolator())
+        calendarController.animationStatus = EXPAND_COLLAPSE_CALENDAR
+        setUpAnimationLisForOpen(heightAnim)
+        calendarView.getLayoutParams().height = 0
+        calendarView.requestLayout()
+        calendarView.startAnimation(heightAnim)
     }
 
-    void closeCalendar() {
+    fun closeCalendar() {
         if (isAnimating) {
-            return;
+            return
         }
-        isAnimating = true;
-        Animation heightAnim = getCollapsingAnimation(false);
-        heightAnim.setDuration(HEIGHT_ANIM_DURATION_MILLIS);
-        heightAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-        setUpAnimationLisForClose(heightAnim);
-        calendarController.setAnimationStatus(CalendarController.EXPAND_COLLAPSE_CALENDAR);
-        compactCalendarView.getLayoutParams().height = compactCalendarView.getHeight();
-        compactCalendarView.requestLayout();
-        compactCalendarView.startAnimation(heightAnim);
+        isAnimating = true
+        val heightAnim = getCollapsingAnimation(false)
+        heightAnim.duration = HEIGHT_ANIM_DURATION_MILLIS.toLong()
+        heightAnim.interpolator = AccelerateDecelerateInterpolator()
+        setUpAnimationLisForClose(heightAnim)
+        calendarController.animationStatus = EXPAND_COLLAPSE_CALENDAR
+        calendarView.layoutParams.height = calendarView.height
+        calendarView.requestLayout()
+        calendarView.startAnimation(heightAnim)
     }
 
-    void openCalendarWithAnimation() {
+    fun closeCalendarWithAnimation() {
         if (isAnimating) {
-            return;
+            return
         }
-        isAnimating = true;
-        final Animator indicatorAnim = getIndicatorAnimator(1f, calendarController.getDayIndicatorRadius());
-        final Animation heightAnim = getExposeCollapsingAnimation(true);
-        compactCalendarView.getLayoutParams().height = 0;
-        compactCalendarView.requestLayout();
-        setUpAnimationLisForExposeOpen(indicatorAnim, heightAnim);
-        compactCalendarView.startAnimation(heightAnim);
+        isAnimating = true
+        val indicatorAnim =
+            getIndicatorAnimator(calendarController.bigCircleIndicatorRadius, 1f)
+        val heightAnim = getExposeCollapsingAnimation(false)
+        calendarView.getLayoutParams().height = calendarView.getHeight()
+        calendarView.requestLayout()
+        setUpAnimationLisForExposeClose(indicatorAnim, heightAnim)
+        calendarView.startAnimation(heightAnim)
     }
 
-    void closeCalendarWithAnimation() {
+    fun openCalendarWithAnimation() {
         if (isAnimating) {
-            return;
+            return
         }
-        isAnimating = true;
-        final Animator indicatorAnim = getIndicatorAnimator(calendarController.getDayIndicatorRadius(), 1f);
-        final Animation heightAnim = getExposeCollapsingAnimation(false);
-        compactCalendarView.getLayoutParams().height = compactCalendarView.getHeight();
-        compactCalendarView.requestLayout();
-        setUpAnimationLisForExposeClose(indicatorAnim, heightAnim);
-        compactCalendarView.startAnimation(heightAnim);
+        isAnimating = true
+        val indicatorAnim: Animator =
+            getIndicatorAnimator(1f, calendarController.bigCircleIndicatorRadius)
+        val heightAnim: Animation = getExposeCollapsingAnimation(true)
+        calendarView.getLayoutParams().height = 0
+        calendarView.requestLayout()
+        setUpAnimationLisForExposeOpen(indicatorAnim, heightAnim)
+        calendarView.startAnimation(heightAnim)
     }
 
-    private void setUpAnimationLisForExposeOpen(final Animator indicatorAnim, Animation heightAnim) {
-        heightAnim.setAnimationListener(new AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                calendarController.setAnimationStatus(CalendarController.EXPOSE_CALENDAR_ANIMATION);
+    private fun setUpAnimationLisForExposeOpen(indicatorAnim: Animator, heightAnim: Animation) {
+        heightAnim.setAnimationListener(object : AnimationListener {
+            override fun onAnimationStart(animation: Animation) {
+                calendarController.animationStatus=EXPOSE_CALENDAR_ANIMATION
             }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                indicatorAnim.start();
-            }
-        });
-        indicatorAnim.addListener(new AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                calendarController.setAnimationStatus(CalendarController.ANIMATE_INDICATORS);
+            override fun onAnimationEnd(animation: Animation) {
+                indicatorAnim.start()
             }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                calendarController.setAnimationStatus(CalendarController.IDLE);
-                onOpen();
-                isAnimating = false;
+            override fun onAnimationRepeat(animation: Animation?) {
+
             }
-        });
+        })
+        indicatorAnim.addListener(object : AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {
+                calendarController.animationStatus=ANIMATE_INDICATORS
+            }
+
+            override fun onAnimationEnd(animation: Animator) {
+                calendarController.animationStatus=IDLE
+                onOpen()
+                isAnimating = false
+            }
+
+            override fun onAnimationCancel(animation: Animator) {
+
+            }
+
+            override fun onAnimationRepeat(animation: Animator) {
+            }
+        })
     }
 
-    private void setUpAnimationLisForExposeClose(final Animator indicatorAnim, Animation heightAnim) {
-        heightAnim.setAnimationListener(new AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                calendarController.setAnimationStatus(CalendarController.EXPOSE_CALENDAR_ANIMATION);
-                indicatorAnim.start();
+    private fun setUpAnimationLisForExposeClose(indicatorAnim: Animator, heightAnim: Animation) {
+        heightAnim.setAnimationListener(object : AnimationListener {
+            override fun onAnimationStart(animation: Animation) {
+                calendarController.animationStatus = EXPOSE_CALENDAR_ANIMATION
+                indicatorAnim.start()
             }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                calendarController.setAnimationStatus(CalendarController.IDLE);
-                onClose();
-                isAnimating = false;
-            }
-        });
-        indicatorAnim.addListener(new AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                calendarController.setAnimationStatus(CalendarController.ANIMATE_INDICATORS);
+            override fun onAnimationEnd(animation: Animation) {
+                calendarController.animationStatus = IDLE
+                onClose()
+                isAnimating = false
             }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
+            override fun onAnimationRepeat(animation: Animation?) {
+                TODO("Not yet implemented")
             }
-        });
-    }
-
-    @NonNull
-    private Animation getExposeCollapsingAnimation(final boolean isCollapsing) {
-        Animation heightAnim = getCollapsingAnimation(isCollapsing);
-        heightAnim.setDuration(HEIGHT_ANIM_DURATION_MILLIS);
-        heightAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-        return heightAnim;
-    }
-
-    @NonNull
-    private Animation getCollapsingAnimation(boolean isCollapsing) {
-        return new CollapsingAnimation(compactCalendarView, compactCalendarController, compactCalendarController.getTargetHeight(), getTargetGrowRadius(), isCollapsing);
-    }
-
-    @NonNull
-    private Animator getIndicatorAnimator(float from, float to) {
-        ValueAnimator animIndicator = ValueAnimator.ofFloat(from, to);
-        animIndicator.setDuration(INDICATOR_ANIM_DURATION_MILLIS);
-        animIndicator.setInterpolator(new OvershootInterpolator());
-        animIndicator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                calendarController.setGrowFactorIndicator((Float) animation.getAnimatedValue());
-                compactCalendarView.invalidate();
+        })
+        indicatorAnim.addListener(object : AnimatorListener {
+            override fun onAnimationStart(animation: Animator) {
+                calendarController.animationStatus = ANIMATE_INDICATORS
             }
-        });
-        return animIndicator;
+
+            override fun onAnimationEnd(animation: Animator) {
+            }
+
+            override fun onAnimationCancel(animation: Animator) {
+
+            }
+
+            override fun onAnimationRepeat(animation: Animator) {
+                TODO("Not yet implemented")
+            }
+        })
     }
 
-    private int getTargetGrowRadius() {
-        int heightSq = compactCalendarController.getTargetHeight() * calendarController.getTargetHeight();
-        int widthSq = compactCalendarController.getWidth() * calendarController.getWidth();
-        return (int) (0.5 * Math.sqrt(heightSq + widthSq));
-    }
-
-    private void onOpen() {
-        if (compactCalendarAnimationListener != null) {
-            compactCalendarAnimationListener.onOpened();
+    private fun getIndicatorAnimator(from: Float, to: Float): Animator {
+        val animIndicator = ValueAnimator.ofFloat(from, to)
+        animIndicator.setDuration(INDICATOR_ANIM_DURATION_MILLIS.toLong())
+        animIndicator.interpolator = OvershootInterpolator()
+        animIndicator.addUpdateListener { animation ->
+            calendarController.growfactorIndicator= animation.animatedValue as Float
+            calendarView.invalidate()
         }
+        return animIndicator
     }
 
-    private void onClose() {
-        if (compactCalendarAnimationListener != null) {
-            compactCalendarAnimationListener.onClosed();
-        }
+    private fun getExposeCollapsingAnimation(isCollapsing: Boolean): Animation {
+        val heightAnim = getCollapsingAnimation(isCollapsing)
+        heightAnim.duration = HEIGHT_ANIM_DURATION_MILLIS.toLong()
+        heightAnim.interpolator = AccelerateDecelerateInterpolator()
+        return heightAnim
     }
 
-    private void setUpAnimationLisForOpen(Animation openAnimation) {
-        openAnimation.setAnimationListener(new AnimationListener() {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                super.onAnimationEnd(animation);
-                onOpen();
-                isAnimating = false;
+    private fun getCollapsingAnimation(isCollapsing: Boolean): Animation {
+        return CollapsingAnimation(
+            calendarView,
+            calendarController,
+            calendarController.targetHeight.toInt(),
+            getTargetGrowRadius(),
+            isCollapsing
+        )
+    }
+
+    private fun getTargetGrowRadius(): Int {
+        val heightSq: Float = sqrt(calendarController.targetHeight)
+        val widthSq: Float = sqrt(calendarController.width)
+        return (0.5 * sqrt(heightSq + widthSq)).toInt()
+    }
+
+    private fun onOpen() {
+            calendarAnimationListener?.onOpened()
+    }
+
+    private fun onClose() {
+            calendarAnimationListener?.onClosed()
+    }
+
+    private fun setUpAnimationLisForOpen(openAnimation: Animation) {
+        openAnimation.setAnimationListener(object : AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+
             }
-        });
-    }
 
-    private void setUpAnimationLisForClose(Animation openAnimation) {
-        openAnimation.setAnimationListener(new AnimationListener() {
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                super.onAnimationEnd(animation);
-                onClose();
-                isAnimating = false;
+            override fun onAnimationEnd(animation: Animation) {
+                onOpen()
+                isAnimating = false
             }
-        });
+
+            override fun onAnimationRepeat(animation: Animation?) {
+
+            }
+        })
     }
 
-    public boolean isAnimating() {
-        return isAnimating;
+    private fun setUpAnimationLisForClose(openAnimation: Animation) {
+        openAnimation.setAnimationListener(object : AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+            }
+
+            override fun onAnimationEnd(animation: Animation) {
+                onClose()
+                isAnimating = false
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {
+            }
+        })
     }
+
+
+
 }
