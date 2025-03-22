@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
+import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -124,8 +125,8 @@ open class SuspendedWindow @JvmOverloads constructor(
     }
 
     protected fun overlayType() = when {
-        Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> WindowManager.LayoutParams.TYPE_TOAST
-        Build.VERSION.SDK_INT < Build.VERSION_CODES.O -> WindowManager.LayoutParams.TYPE_PHONE
+        Build.VERSION.SDK_INT < VERSION_CODES.M -> WindowManager.LayoutParams.TYPE_TOAST
+        Build.VERSION.SDK_INT < VERSION_CODES.O -> WindowManager.LayoutParams.TYPE_PHONE
         else -> WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
     }
 

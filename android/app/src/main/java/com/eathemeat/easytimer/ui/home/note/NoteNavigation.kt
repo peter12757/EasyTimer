@@ -1,21 +1,23 @@
 package com.eathemeat.easytimer.ui.home.note
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import com.eathemeat.easytimer.R
+import com.eathemeat.easytimer.ui.home.NavigationItem
 import kotlinx.serialization.Serializable
 
 @Serializable
 data object NoteRouter
 
-fun NavController.navigateToNote(
-    navOptions: NavOptions? = null,
+val NoteNavigation = NavigationItem(
+    R.string.nav_note,R.drawable.nav_note, NoteRouter, R.string.nav_note
 ) {
-    navigate(route = NoteRouter, navOptions)
+    composable<NoteRouter> {
+        NoteScreen()
+    }
 }
 
-fun NavGraphBuilder.NoteScreen() {
+fun NavGraphBuilder.NavNoteScreen() {
     composable<NoteRouter> {
         NoteScreen()
     }

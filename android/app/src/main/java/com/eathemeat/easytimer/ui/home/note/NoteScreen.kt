@@ -1,13 +1,13 @@
 package com.eathemeat.easytimer.ui.home.note
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.eathemeat.easytimer.ui.home.HomeViewModel
 
 
 @Composable
-fun NoteScreen() {
-    Text(text = "RecoderPage")
+fun NoteScreen(homeViewModel: HomeViewModel = viewModel()) {
 }
 
 @Preview
