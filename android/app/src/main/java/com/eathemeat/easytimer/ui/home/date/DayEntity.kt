@@ -4,10 +4,6 @@ import androidx.compose.ui.graphics.Color
 import java.util.Calendar
 
 
-
-
-
-
 data class YearEntity(val year: Int = 0,
                       val monthList: MutableMap<Int,MonthEntity> = mutableMapOf()
 ) {
@@ -17,6 +13,20 @@ data class YearEntity(val year: Int = 0,
 
     fun isThisYear(calendar:Calendar = Calendar.getInstance()):Boolean {
         return calendar.get(Calendar.YEAR) == year
+    }
+
+    /**
+     * 是否是闰年
+     *
+     * @param year year
+     * @return 是否是闰年
+     */
+    fun isLeapYear(year: Int): Boolean {
+        return year % 4 == 0 && year % 100 != 0 || year % 400 == 0
+    }
+
+    override fun toString(): String {
+        return "year:$year"
     }
 }
 
@@ -31,6 +41,36 @@ data class MonthEntity(
 
     fun isThisMonth(calendar:Calendar = Calendar.getInstance()):Boolean {
         return calendar.get(Calendar.MONTH) == month &&year.isThisYear(calendar)
+    }
+
+    /**
+     * 获取某月的天数
+     *
+     * @param year  年
+     * @param month 月
+     * @return 某月的天数
+     */
+    fun getMonthDaysCount(year: Int, month: Int): Int {
+        var count = 0
+
+        val bigMonth = arrayOf(1, 3, 5, 7, 8,10,12)
+        return month.run {
+            if (bigMonth.contains(month)){//判断大月份
+                31
+            }else if (month == 2){//判断平年与闰年
+               if (this@MonthEntity.year.isLeapYear(year)) {
+                    29
+                } else {
+                    28
+                }
+            }else {//判断小月
+                30
+            }
+        }
+    }
+
+    override fun toString(): String {
+        return "year:$year month:$month"
     }
 }
 
@@ -49,6 +89,10 @@ data class WeekEntity(
 
     fun isSameMonth(other: DayEntity): Boolean {
         return month.isSameMonth(other.week.month)
+    }
+
+    override fun toString(): String {
+        return "month:$month week:$week "
     }
 }
 
@@ -75,6 +119,18 @@ data class DayEntity(
 
     fun isWeekend(): Boolean {
         return day == 6 || day == 7
+    }
+
+    fun year(): Int {
+        return week.month.year.year
+    }
+
+    fun month(): Int {
+        return week.month.month
+    }
+
+    override fun toString(): String {
+        return "week:$week day:$day color:$color"
     }
 }
 

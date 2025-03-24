@@ -1,10 +1,8 @@
 package com.eathemeat.easytimer.ui.home.date
 
-import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -17,22 +15,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -40,11 +29,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,7 +37,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.integerArrayResource
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextMeasurer
@@ -65,22 +50,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.eathemeat.easytimer.R
 import com.eathemeat.easytimer.ui.home.HomeViewModel
 import com.future.composecalendar.utils.XLogger
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import kotlin.math.ceil
 
 @Composable
 fun DateScreen(homeViewModel: HomeViewModel = viewModel()) {
     val pagerState = rememberPagerState(
-        initialPage = 5000,
-        pageCount = { 2 }
+        initialPage = 0,
+        pageCount = { 10000 }
     )
-    YearMonthSelectDialog(viewModel = homeViewModel, pagerState)
+    YearMonthSelectDialog(viewModel = homeViewModel,pagerState)
     XLogger.d("==================>Calendar")
     LazyColumn(
         modifier = Modifier
@@ -93,14 +76,14 @@ fun DateScreen(homeViewModel: HomeViewModel = viewModel()) {
                     .fillMaxWidth()
                     .background(color = Color.White)
             ) {
-                val textMeasurerAndTextSize =
-                    YearAndMonth(homeViewModel, pagerState)
+                val textMeasurerAndTextSize = getTextMeasurerAndTextSize()
+                YearAndMonth(homeViewModel, pagerState)
                 //星期
                 WeekRow()
                 //日历信息
                 CalendarPager(
                     homeViewModel = homeViewModel,
-                    textMeasurerAndTextSize = getTextMeasurerAndTextSize(),
+                    textMeasurerAndTextSize = textMeasurerAndTextSize,
                     pagerState
                 )
             }
@@ -177,16 +160,17 @@ fun CalendarPagerContent(
     page: Int,
 ) {
     XLogger.d("CalendarContent======>")
-    val homeUiState = homeViewModel.dateScreenState.dateStateData.collectAsState().value
+    val dateState = homeViewModel.dateScreenState.dateStateData.collectAsState().value
     val (textMeasurer, textSize) = textMeasurerAndTextSize
     val paddingPx = 2
 
-    val screenWidthDp = Configuration.SCREEN_WIDTH_DP_UNDEFINED
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp
+    val clickDay = dateState.currentDay
 
-    val height = if (homeUiState.weekModelFlag) {
+    val height = if (dateState.weekModelFlag) {
         (screenWidthDp / 7f).dp
     } else {
-        (homeUiState.currentDay.week.month.weekList.size / 7 * (screenWidthDp / 7f)).dp
+        (dateState.currentDay.week.month.weekList.size / 7 * (screenWidthDp / 7f)).dp
     }
 
     Canvas(modifier = Modifier
@@ -194,7 +178,7 @@ fun CalendarPagerContent(
         .height(height)
         .background(color = Color.Magenta)
         .animateContentSize()
-        .pointerInput(key1 = homeUiState) {
+        .pointerInput(key1 = dateState) {
             detectTapGestures(onTap = { offset ->
                 val perWidthWithDp = screenWidthDp / 7f
                 val column = ceil(offset.x / perWidthWithDp.dp.toPx()).toInt()-1
@@ -230,21 +214,21 @@ fun CalendarPagerContent(
         }, onDraw = {
         val perWidthWithPadding = this.size.width / 7f
 
-        if (!homeUiState.weekModelFlag) {
+        if (!dateState.weekModelFlag) {
             XLogger.d("月历模式")
-            homeUiState.currentDay.week.month.weekList.forEach { weekIndex, weekData ->
+            clickDay.week.month.weekList.forEach { weekIndex, weekData ->
                 weekData.dayList.forEach { dayIndex, day ->
                     XLogger.d("每日的数据 ${day}")
                     val textColor =
-                        if (day.isSameDay(homeUiState.currentDay)) {
+                        if (day.isSameDay(dateState.currentDay)) {
                             Color.White
-                        } else if (day.isWeekend() && day.isSameMonth(homeUiState.currentDay)) {
+                        } else if (day.isWeekend() && day.isSameMonth(dateState.currentDay)) {
                             Color.Red
                         } else {
                             day.color
                         }
                     val backgroundColor: Color =
-                        if (day.isSameDay(homeUiState.currentDay)) {
+                        if (day.isSameDay(dateState.currentDay)) {
                             //点击的画圆背景
                             Color.Blue.copy(0.5f)
                         } else if (day.isToday()) {
@@ -321,20 +305,20 @@ fun CalendarPagerContent(
         } else {
             XLogger.d("周历模式")
 
-            homeUiState.currentDay.week.dayList.forEach { (index, dayEntity) ->
+            dateState.currentDay.week.dayList.forEach { (index, dayEntity) ->
                 //一行 当前的日期
                 //XLogger.d("每日的数据 ${monthData.year}-${monthData.month+1}-${monthData.day}-${monthData.color}")
                 val textColor =
-                    if (dayEntity.isSameDay(homeUiState.currentDay)) {
+                    if (dayEntity.isSameDay(dateState.currentDay)) {
                         Color.White
-                    } else if (dayEntity.isWeekend() && dayEntity.isSameMonth(homeUiState.currentDay)) {
+                    } else if (dayEntity.isWeekend() && dayEntity.isSameMonth(dateState.currentDay)) {
                         Color.Red
                     } else {
                         dayEntity.color
                     }
 
                 val backgroundColor: Color =
-                    if (dayEntity.isSameDay(homeUiState.currentDay)) {
+                    if (dayEntity.isSameDay(dateState.currentDay)) {
                         //点击的画圆背景
                         Color.Blue.copy(0.5f)
                     } else if (dayEntity.isToday()) {
@@ -436,197 +420,6 @@ fun UpdatePagerState(homeViewModel: HomeViewModel, pagerState: PagerState) {
 //        }
 //    })
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun YearMonthSelectDialog(viewModel: HomeViewModel, pagerState: PagerState) {
-    val homeUIState = viewModel.dateScreenState.dateStateData.collectAsState().value
-
-    val currentDay = homeUIState.currentDay
-    val currentYear = currentDay.week.month.year.year
-
-    if (homeUIState.showYearMonthDialog) {
-        val coroutineScope = rememberCoroutineScope()
-        val monthArray = integerArrayResource(id = R.array.month)
-        val yearList = mutableListOf<Int>().apply {
-            for (year in 0..500) {
-                add(year+currentYear-250)
-            }
-        }
-
-
-        val listState = rememberLazyListState()
-        LaunchedEffect(key1 = Unit, block = {
-            listState.scrollToItem(index = currentYear)
-        })
-        val pageState = rememberPagerState(
-            initialPage = 0,
-            pageCount = { 2 },
-        )
-
-        var selectMonth by remember {
-            mutableStateOf(currentDay.week.month.month + 1)
-        }
-
-        var selectYear by remember {
-            mutableStateOf(currentDay.week.month.year.year)
-        }
-
-        XLogger.d("------>$selectMonth    $selectYear")
-
-        AlertDialog(
-            modifier = Modifier
-                .fillMaxWidth(0.8f)
-                .wrapContentHeight(),
-            onDismissRequest = {
-                viewModel.dateScreenState.dispatch(
-                    DateScreenState.HomeAction.ShowYearMonthSelectDialog(
-                        false
-                    )
-                )
-            },
-            properties = DialogProperties(usePlatformDefaultWidth = false)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .animateContentSize()
-                    .background(
-                        color = Color.White, shape = RoundedCornerShape(10.dp)
-                    )
-                    .padding(horizontal = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 10.dp),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .clickable {
-                                coroutineScope.launch {
-                                    pageState.scrollToPage(0)
-                                }
-                            },
-                        text = "${selectYear}年",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Text(
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .clickable {
-                                coroutineScope.launch {
-                                    pageState.scrollToPage(1)
-                                }
-                            },
-                        text = "${selectMonth}月",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-
-                HorizontalPager(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-//                    pageCount = 2,
-                    state = pageState
-                ) { page ->
-                    if (page == 0) {
-                        LazyRow(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 10.dp),
-                            state = listState,
-                            content = {
-                                itemsIndexed(items = yearList, key = { index, _ ->
-                                    index
-                                }, itemContent = { _, content ->
-                                    Text(text = "$content",
-                                        color = if (selectYear == content) Color.Red else Color.Black,
-                                        modifier = Modifier
-                                            .padding(horizontal = 4.dp)
-                                            .clickable {
-                                                selectYear = content
-                                            }
-                                            .padding(horizontal = 6.dp, vertical = 6.dp)
-                                    )
-                                })
-                            })
-                    } else {
-                        LazyVerticalGrid(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            columns = GridCells.Fixed(4), content = {
-                                itemsIndexed(items = monthArray.asList(), key = { index, _ ->
-                                    index
-                                }, itemContent = { _, content ->
-                                    Text(text = "${content}月",
-                                        color = if (selectMonth == content) Color.Red else Color.Black,
-                                        textAlign = TextAlign.Center,
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable {
-                                                selectMonth = content
-                                            }
-                                            .padding(vertical = 10.dp)
-                                    )
-                                })
-                            })
-                    }
-                }
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    TextButton(modifier = Modifier.padding(horizontal = 20.dp),
-                        onClick = {
-                            viewModel.dateScreenState.dispatch(
-                                DateScreenState.HomeAction.ShowYearMonthSelectDialog(
-                                    false
-                                )
-                            )
-                        }) {
-                        Text(text = "取消")
-                    }
-
-                    TextButton(modifier = Modifier.padding(horizontal = 20.dp),
-                        onClick = {
-                            //月份的跨度
-                            val calendar = Calendar.getInstance()
-
-                            val todayYear = calendar.get(Calendar.YEAR)
-                            val todayMonth = calendar.get(Calendar.MONTH)
-
-                            //月份的跨度
-                            val yearDiff: Int = selectYear - todayYear
-                            val monthDiff: Int = selectMonth - todayMonth
-                            val totalMonthDiff = yearDiff * 12 + monthDiff
-
-                            XLogger.d("todayYear:$todayYear todayMonth:$todayMonth  selectYear:$selectYear  selectMonth:$selectMonth  totalMonthDiff:$totalMonthDiff")
-
-                            coroutineScope.launch {
-                                XLogger.d("=========>${totalMonthDiff + 5000}")
-                                pagerState.scrollToPage(totalMonthDiff + 5000 - 1)
-                            }
-                            viewModel.dateScreenState.dispatch(
-                                DateScreenState.HomeAction.ShowYearMonthSelectDialog(
-                                    false
-                                )
-                            )
-                        }) {
-                        Text(text = "确定")
-                    }
-                }
-            }
-        }
-    }
-}
-
 /**
  * 星期信息
  */
@@ -658,9 +451,9 @@ fun WeekRow() {
 fun YearAndMonth(homeViewModel: HomeViewModel, pagerState: PagerState) {
     val coroutineScope = rememberCoroutineScope()
     val homeUiState =
-        homeViewModel.dateScreenState.dateStateData.collectAsState().value
-    val clickDay = homeUiState.currentDay
-    XLogger.d("YearAndMonth=======================>${clickDay}")
+        homeViewModel.dateScreenState.dateStateData.collectAsState()
+    val currentDay = homeUiState.value.currentDay
+    XLogger.d("YearAndMonth=======================>${currentDay}")
     //TODO：点击回到  年月日
     Row(
         modifier = Modifier
@@ -690,7 +483,7 @@ fun YearAndMonth(homeViewModel: HomeViewModel, pagerState: PagerState) {
             )
         }) {
             Text(
-                text = "${clickDay.week.month.year.year}年${clickDay.week.month.month + 1}月${clickDay.day}日",
+                text = "${currentDay.year()}年${currentDay.month() + 1}月${currentDay.day}日",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color.Black,

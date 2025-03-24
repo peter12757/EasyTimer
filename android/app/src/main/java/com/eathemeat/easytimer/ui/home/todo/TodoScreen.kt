@@ -14,8 +14,7 @@ import com.eathemeat.easytimer.ui.home.HomeViewModel
 
 
 @Composable
-fun TodoScreen() {
-    var viewmodule = viewModel(HomeViewModel::class.java)
+fun TodoScreen(viewmodule: HomeViewModel = viewModel(HomeViewModel::class.java)) {
     AndroidView(factory = { context->
         LayoutInflater.from(context).inflate(R.layout.todoscreen, null, false)
     }, modifier = Modifier.fillMaxWidth().fillMaxHeight()) { rootView ->
