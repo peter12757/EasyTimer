@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -27,7 +27,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.eathemeat.easytimer.SubMainViewModel
 import com.eathemeat.easytimer.ui.home.date.NavDateScreen
 import com.eathemeat.easytimer.ui.home.mine.NavMineScreen
 import com.eathemeat.easytimer.ui.home.note.NavNoteScreen
@@ -38,8 +37,6 @@ import com.eathemeat.transkit.main.ui.theme.NavigationSel
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var viewModel: HomeViewModel
-    lateinit var submodel: SubMainViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,15 +44,13 @@ class MainActivity : AppCompatActivity() {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
 
 
-        viewModel = ViewModelProvider(this).get(HomeViewModel::class)
-        submodel = ViewModelProvider(this).get(SubMainViewModel::class.java)
         setContent {
             EasyTimerTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
 //                    color = MaterialTheme.colorScheme.background
                 ) {
-                    MainScreen(viewModel)
+                    MainScreen()
                 }
             }
         }
@@ -75,6 +70,7 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun MainScreen(viewModel: HomeViewModel = viewModel(HomeViewModel::class.java)) {
     val navController = rememberNavController()
+    navController.setLifecycleOwner(LocalLifecycleOwner.current)
     Scaffold(
         bottomBar = {
             BottomNavigation(
