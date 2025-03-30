@@ -1,6 +1,10 @@
 package com.eathemeat.easytimer.ui.home.date
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.ViewModel
 import com.eathemeat.easytimer.data.NoteInfo
 import com.future.composecalendar.data.DayEntity
 import com.future.composecalendar.data.MonthEntity
@@ -13,8 +17,7 @@ import kotlinx.coroutines.flow.update
 import java.util.Calendar
 import kotlin.math.ceil
 
-
-class YearEntitys :HashMap<Int,YearEntity> {
+class YearEntitys :HashMap<Int, YearEntity> {
     var currentDay: DayEntity
     var weekModelFlag: Boolean = false//周历模式
     // 周历模式上一次滑动的index
@@ -40,28 +43,26 @@ class YearEntitys :HashMap<Int,YearEntity> {
         return yearEntity
     }
 
-    private fun getYear(year: Int):YearEntity {
+    private fun getYear(year: Int): YearEntity {
         if (containsKey(year)) return get(year)
-        val calendar = Calendar.getInstance()
-        calendar.set(Calendar.YEAR, year)
         return YearEntity(year).let { result->
             (1..12).forEach { month ->
-                calendar.set(Calendar.MONTH, 2)
-                XLogger.d("month:$month")
+                val calendar = Calendar.getInstance()
+                calendar.firstDayOfWeek = Calendar.SUNDAY
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month-1)   //calender的month从0开始
+                calendar.set(Calendar.DAY_OF_MONTH,1)   //设置第一天
+                val firstDay = calendar.get(Calendar.DAY_OF_WEEK)
                 result.monthList[month] =
                     MonthEntity(result, month).apply {
                         val daysOfMonth = getMonthDaysCount(year, month)
-                        val firstDay = calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH)
                         for (day in 1..daysOfMonth) {
-                            calendar.set(Calendar.DAY_OF_MONTH, day)
+                            calendar.set(Calendar.DAY_OF_WEEK_IN_MONTH, day)
+                            val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
                             val weekIndex = ceil((firstDay+day-1)/7f).toInt()
-                            val dayOfWeek = (firstDay-1+day-1)%7
-                            val dayOfWeek1 = calendar.get(Calendar.DAY_OF_WEEK)
-
-                            if (month == 2) XLogger.d("month:$month weekIndex:$weekIndex day:$day dayOfWeek:$dayOfWeek dayOfWeek1:$dayOfWeek1  firstDay:$firstDay")
                             if(!weekList.containsKey(weekIndex)) weekList[weekIndex] = WeekEntity(this, month)
                             weekList[weekIndex]?.also {
-                                it.dayList.put(dayOfWeek,DayEntity(it, day).apply {
+                                it.dayList.put(dayOfWeek, DayEntity(it, day).apply {
                                     if (isToday()) {
                                         color = Color.Red
 //                                } else if (day < firstDay) {
@@ -73,8 +74,13 @@ class YearEntitys :HashMap<Int,YearEntity> {
                                     }
                                 })
                             }
+                            if (month <4 && weekIndex ==1) {
+                                XLogger.d("weekIndex:$weekIndex dayOfWeek:$dayOfWeek week:${weekList[weekIndex]?.week}")
+                                XLogger.d("weekList[$weekIndex]:${weekList[weekIndex]?.dayList?.get(dayOfWeek)}")
+                            }
+
                         }
-                }
+                    }
 
             }
             result
@@ -88,7 +94,10 @@ class DateNoteEntitys: HashMap<Calendar, NoteInfo>() {
 
 }
 
-class DateScreenState {
+class DateViewModel: ViewModel() {
+
+
+    var timeNow by mutableStateOf(Pair<String,String>("1989-11-28","00:00:00"))
     //年的数据
     private val _dateStateData: MutableStateFlow<YearEntitys> = MutableStateFlow(YearEntitys())
 
@@ -98,9 +107,8 @@ class DateScreenState {
     val dateStateData = _dateStateData.asStateFlow()    //DateScreen data
 
     init {
-       _dateStateData.value.get(today.get(Calendar.YEAR))
+        _dateStateData.value.get(today.get(Calendar.YEAR))
     }
-
 
     sealed class HomeAction {
         data class ItemClick(val row: Int,val column: Int) : HomeAction()
@@ -132,8 +140,8 @@ class DateScreenState {
                         val weekEntity = day.week
 
                         _dateStateData.update {
-                                it.currentDay = day
-                                it
+                            it.currentDay = day
+                            it
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -276,4 +284,5 @@ class DateScreenState {
             }
         }
     }
+
 }

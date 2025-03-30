@@ -70,7 +70,7 @@ data class MonthEntity(
     }
 
     override fun toString(): String {
-        return "year:$year month:$month"
+        return "$year month:$month"
     }
 }
 
@@ -92,7 +92,7 @@ data class WeekEntity(
     }
 
     override fun toString(): String {
-        return "month:$month week:$week "
+        return "$month week:$week "
     }
 }
 
@@ -130,7 +130,7 @@ data class DayEntity(
     }
 
     override fun toString(): String {
-        return "week:$week day:$day color:$color"
+        return "$week day:$day color:$color"
     }
 }
 

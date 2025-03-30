@@ -10,11 +10,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.eathemeat.easytimer.R
-import com.eathemeat.easytimer.ui.home.HomeViewModel
 
 
 @Composable
-fun TodoScreen(viewmodule: HomeViewModel = viewModel(HomeViewModel::class.java)) {
+fun TodoScreen(viewmodule: TodoViewModel = viewModel()) {
     AndroidView(factory = { context->
         LayoutInflater.from(context).inflate(R.layout.todoscreen, null, false)
     }, modifier = Modifier.fillMaxWidth().fillMaxHeight()) { rootView ->

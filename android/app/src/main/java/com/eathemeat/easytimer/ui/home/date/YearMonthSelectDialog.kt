@@ -41,15 +41,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.eathemeat.easytimer.R
-import com.eathemeat.easytimer.ui.home.HomeViewModel
 import com.future.composecalendar.utils.XLogger
 import kotlinx.coroutines.launch
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun YearMonthSelectDialog(viewModel: HomeViewModel, pagerState: PagerState) {
-    val homeUIState = viewModel.dateScreenState.dateStateData.collectAsState().value
+fun YearMonthSelectDialog(viewModel: DateViewModel, pagerState: PagerState) {
+    val homeUIState = viewModel.dateStateData.collectAsState().value
 
     val currentDay = homeUIState.currentDay
     val currentYear = currentDay.week.month.year.year
@@ -88,8 +87,8 @@ fun YearMonthSelectDialog(viewModel: HomeViewModel, pagerState: PagerState) {
                 .fillMaxWidth(0.8f)
                 .wrapContentHeight(),
             onDismissRequest = {
-                viewModel.dateScreenState.dispatch(
-                    DateScreenState.HomeAction.ShowYearMonthSelectDialog(
+                viewModel.dispatch(
+                    DateViewModel.HomeAction.ShowYearMonthSelectDialog(
                         false
                     )
                 )
@@ -194,8 +193,8 @@ fun YearMonthSelectDialog(viewModel: HomeViewModel, pagerState: PagerState) {
                 ) {
                     TextButton(modifier = Modifier.padding(horizontal = 20.dp),
                         onClick = {
-                            viewModel.dateScreenState.dispatch(
-                                DateScreenState.HomeAction.ShowYearMonthSelectDialog(
+                            viewModel.dispatch(
+                                DateViewModel.HomeAction.ShowYearMonthSelectDialog(
                                     false
                                 )
                             )
@@ -222,8 +221,8 @@ fun YearMonthSelectDialog(viewModel: HomeViewModel, pagerState: PagerState) {
                                 XLogger.d("=========>${totalMonthDiff + 5000}")
                                 pagerState.scrollToPage(totalMonthDiff + 5000 - 1)
                             }
-                            viewModel.dateScreenState.dispatch(
-                                DateScreenState.HomeAction.ShowYearMonthSelectDialog(
+                            viewModel.dispatch(
+                                DateViewModel.HomeAction.ShowYearMonthSelectDialog(
                                     false
                                 )
                             )

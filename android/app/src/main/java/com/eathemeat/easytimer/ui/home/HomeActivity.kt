@@ -37,9 +37,6 @@ import com.eathemeat.transkit.main.ui.theme.EasyTimerTheme
 import com.eathemeat.transkit.main.ui.theme.NavigationSel
 
 class MainActivity : AppCompatActivity() {
-
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -69,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MainScreen(viewModel: HomeViewModel = viewModel(HomeViewModel::class.java)) {
+fun MainScreen() {
     val navController = rememberNavController()
     navController.setLifecycleOwner(LocalLifecycleOwner.current)
     Scaffold(

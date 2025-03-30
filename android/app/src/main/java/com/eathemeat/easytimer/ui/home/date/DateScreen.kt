@@ -52,17 +52,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.eathemeat.easytimer.R
-import com.eathemeat.easytimer.ui.home.HomeViewModel
 import com.future.composecalendar.utils.XLogger
 import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
 @Composable
-fun DateScreen(homeViewModel: HomeViewModel = viewModel()) {
+fun DateScreen(homeViewModel: DateViewModel = viewModel()) {
     val pagerState = rememberPagerState(
         initialPage = 0,
         pageCount = { 10000 }
     )
+
     YearMonthSelectDialog(viewModel = homeViewModel,pagerState)
     XLogger.d("==================>Calendar")
     LazyColumn(
@@ -88,7 +88,7 @@ fun DateScreen(homeViewModel: HomeViewModel = viewModel()) {
                 )
             }
         }
-        repeat(20) {
+        repeat(5) {
             item(key = it) {
                 Box(
                     modifier = Modifier
@@ -129,7 +129,7 @@ fun DateScreen(homeViewModel: HomeViewModel = viewModel()) {
 
 @Composable
 fun CalendarPager(
-    homeViewModel: HomeViewModel,
+    homeViewModel: DateViewModel,
     textMeasurerAndTextSize: Pair<TextMeasurer, IntSize>,
     pagerState: PagerState
 ) {
@@ -155,12 +155,13 @@ fun CalendarPager(
 
 @Composable
 fun CalendarPagerContent(
-    homeViewModel: HomeViewModel,
+    homeViewModel: DateViewModel,
     textMeasurerAndTextSize: Pair<TextMeasurer, IntSize>,
     page: Int,
 ) {
     XLogger.d("CalendarContent======>")
-    val dateState = homeViewModel.dateScreenState.dateStateData.collectAsState().value
+
+    val dateState = homeViewModel.dateStateData.collectAsState().value
     val (textMeasurer, textSize) = textMeasurerAndTextSize
     val paddingPx = 2
 
@@ -183,8 +184,8 @@ fun CalendarPagerContent(
                 val perWidthWithDp = screenWidthDp / 7f
                 val column = ceil(offset.x / perWidthWithDp.dp.toPx()).toInt()-1
                 val row = ceil(offset.y / perWidthWithDp.dp.toPx()).toInt() -1
-                homeViewModel.dateScreenState.dispatch(
-                    DateScreenState.HomeAction.ItemClick(
+                homeViewModel.dispatch(
+                    DateViewModel.HomeAction.ItemClick(
                         row,
                         column
                     )
@@ -194,8 +195,8 @@ fun CalendarPagerContent(
                 XLogger.d("detectDragGestures=======>change:${change.position.y}  dragAmount:${dragAmount}")
                 if (dragAmount >= 20) {
                     XLogger.d("------------>月历")
-                    homeViewModel.dateScreenState.dispatch(
-                        DateScreenState.HomeAction.SetCalendarModel(
+                    homeViewModel.dispatch(
+                        DateViewModel.HomeAction.SetCalendarModel(
                             false,
                             page
                         )
@@ -203,8 +204,8 @@ fun CalendarPagerContent(
                 }
                 if (dragAmount <= -20) {
                     XLogger.d("------------>周历")
-                    homeViewModel.dateScreenState.dispatch(
-                        DateScreenState.HomeAction.SetCalendarModel(
+                    homeViewModel.dispatch(
+                        DateViewModel.HomeAction.SetCalendarModel(
                             true,
                             page = page
                         )
@@ -395,9 +396,9 @@ fun CalendarPagerContent(
 }
 
 @Composable
-fun UpdatePagerState(homeViewModel: HomeViewModel, pagerState: PagerState) {
+fun UpdatePagerState(homeViewModel: DateViewModel, pagerState: PagerState) {
     XLogger.d("================>UpdatePagerState")
-    val homeUIState = homeViewModel.dateScreenState.dateStateData.collectAsState().value
+    val homeUIState = homeViewModel.dateStateData.collectAsState().value
 //    val monthOffset = homeUIState.monthEntity.offset
 //    val weekOffset = homeUIState.weekEntity.offset
 //    val offset = if (homeUIState.weekModelFlag) {
@@ -409,7 +410,7 @@ fun UpdatePagerState(homeViewModel: HomeViewModel, pagerState: PagerState) {
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             XLogger.d("snapshotFlow============>$page")
-            homeViewModel.dateScreenState.dispatch(DateScreenState.HomeAction.UpdateData(page))
+            homeViewModel.dispatch(DateViewModel.HomeAction.UpdateData(page))
         }
     }
 //
@@ -448,10 +449,10 @@ fun WeekRow() {
  * 年和月
  */
 @Composable
-fun YearAndMonth(homeViewModel: HomeViewModel, pagerState: PagerState) {
+fun YearAndMonth(homeViewModel: DateViewModel, pagerState: PagerState) {
     val coroutineScope = rememberCoroutineScope()
     val homeUiState =
-        homeViewModel.dateScreenState.dateStateData.collectAsState()
+        homeViewModel.dateStateData.collectAsState()
     val currentDay = homeUiState.value.currentDay
     XLogger.d("YearAndMonth=======================>${currentDay}")
     //TODO：点击回到  年月日
@@ -476,8 +477,8 @@ fun YearAndMonth(homeViewModel: HomeViewModel, pagerState: PagerState) {
         }
 
         TextButton(onClick = {
-            homeViewModel.dateScreenState.dispatch(
-                DateScreenState.HomeAction.ShowYearMonthSelectDialog(
+            homeViewModel.dispatch(
+                DateViewModel.HomeAction.ShowYearMonthSelectDialog(
                     true
                 )
             )
