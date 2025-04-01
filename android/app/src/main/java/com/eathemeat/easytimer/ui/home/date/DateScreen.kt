@@ -171,18 +171,18 @@ fun CalendarPagerContent(
     val height = if (dateState.weekModelFlag) {
         (screenWidthDp / 7f).dp
     } else {
-        (dateState.currentDay.week.month.weekList.size / 7 * (screenWidthDp / 7f)).dp
+        (dateState.currentDay.weekEntity.monthEntity.weekList.size  * (screenWidthDp / 7f)).dp
     }
 
     Canvas(modifier = Modifier
         .fillMaxWidth()
         .height(height)
-        .background(color = Color.Magenta)
+        .background(color = Color.Transparent)
         .animateContentSize()
         .pointerInput(key1 = dateState) {
             detectTapGestures(onTap = { offset ->
                 val perWidthWithDp = screenWidthDp / 7f
-                val column = ceil(offset.x / perWidthWithDp.dp.toPx()).toInt()-1
+                val column = ceil(offset.x / perWidthWithDp.dp.toPx()).toInt() -1
                 val row = ceil(offset.y / perWidthWithDp.dp.toPx()).toInt() -1
                 homeViewModel.dispatch(
                     DateViewModel.HomeAction.ItemClick(
@@ -217,22 +217,25 @@ fun CalendarPagerContent(
 
         if (!dateState.weekModelFlag) {
             XLogger.d("月历模式")
-            clickDay.week.month.weekList.forEach { weekIndex, weekData ->
-                weekData.dayList.forEach { dayIndex, day ->
-                    XLogger.d("每日的数据 ${day}")
+            clickDay.weekEntity.monthEntity.weekList.forEach { (weekIndex, weekData) ->
+                weekData.dayList.forEach { (dayIndex, dayEntity) ->
+                    XLogger.d("每日的数据 ${dayEntity}")
+                    val colIndex = (dayIndex+1)%7
+                    val rowIndex = weekIndex -1
+                    XLogger.d("colIndex:$colIndex  rowIndex:$rowIndex")
                     val textColor =
-                        if (day.isSameDay(dateState.currentDay)) {
+                        if (dayEntity.isSameDay(dateState.currentDay)) {
                             Color.White
-                        } else if (day.isWeekend() && day.isSameMonth(dateState.currentDay)) {
+                        } else if (dayEntity.isWeekend() && dayEntity.isSameMonth(dateState.currentDay)) {
                             Color.Red
                         } else {
-                            day.color
+                            dayEntity.color
                         }
                     val backgroundColor: Color =
-                        if (day.isSameDay(dateState.currentDay)) {
+                        if (dayEntity.isSameDay(dateState.currentDay)) {
                             //点击的画圆背景
                             Color.Blue.copy(0.5f)
-                        } else if (day.isToday()) {
+                        } else if (dayEntity.isToday()) {
                             //当天画圆背景
                             Color.LightGray.copy(0.5f)
                         } else {
@@ -242,21 +245,21 @@ fun CalendarPagerContent(
                         color = backgroundColor,
                         radius = (perWidthWithPadding - 2 * paddingPx) / 2f,
                         center = Offset(
-                            dayIndex * perWidthWithPadding + paddingPx + perWidthWithPadding / 2f,
-                            weekIndex * perWidthWithPadding - paddingPx + perWidthWithPadding / 2f
+                            colIndex * perWidthWithPadding + paddingPx + perWidthWithPadding / 2f,
+                            rowIndex * perWidthWithPadding - paddingPx + perWidthWithPadding / 2f
                         ),
                     )
 
                     drawText(
                         textMeasurer = textMeasurer,
-                        text = "${day.day}",
+                        text = "${dayEntity.day}",
                         size = Size(
                             perWidthWithPadding - 2 * paddingPx,
                             perWidthWithPadding - 2 * paddingPx
                         ),
                         topLeft = Offset(
-                            dayIndex * perWidthWithPadding,
-                            weekIndex * perWidthWithPadding
+                            colIndex * perWidthWithPadding,
+                            rowIndex * perWidthWithPadding
                                     //定位到中间位置
                                     + perWidthWithPadding * 0.5f
                                     //减去文字的高度
@@ -270,15 +273,15 @@ fun CalendarPagerContent(
                         )
                     )
 
-                    if (day.isToday()) {
+                    if (dayEntity.isToday()) {
                         //今天的背景
                         val todayRadius = (perWidthWithPadding - 2 * paddingPx) / 8f
                         drawCircle(
                             color = Color.White,
                             radius = todayRadius,
                             center = Offset(
-                                dayIndex * perWidthWithPadding + perWidthWithPadding * 0.75f + todayRadius,
-                                weekIndex * perWidthWithPadding + todayRadius
+                                colIndex * perWidthWithPadding + perWidthWithPadding * 0.75f + todayRadius,
+                                rowIndex * perWidthWithPadding + todayRadius
                             ),
                         )
                         //今天的文字 大小是0.75倍的宽度
@@ -290,8 +293,8 @@ fun CalendarPagerContent(
                                 (perWidthWithPadding - 2 * paddingPx) / 4f
                             ),
                             topLeft = Offset(
-                                dayIndex * perWidthWithPadding + perWidthWithPadding * 0.75f,
-                                weekIndex * perWidthWithPadding
+                                colIndex * perWidthWithPadding + perWidthWithPadding * 0.75f,
+                                rowIndex * perWidthWithPadding
                             ),
                             style = TextStyle(
                                 textAlign = TextAlign.Center,
@@ -306,9 +309,10 @@ fun CalendarPagerContent(
         } else {
             XLogger.d("周历模式")
 
-            dateState.currentDay.week.dayList.forEach { (index, dayEntity) ->
+            clickDay.weekEntity.dayList.forEach { (index, dayEntity) ->
                 //一行 当前的日期
-                //XLogger.d("每日的数据 ${monthData.year}-${monthData.month+1}-${monthData.day}-${monthData.color}")
+                val colIndex = index +1
+                XLogger.d("每日的数据 ${dayEntity}")
                 val textColor =
                     if (dayEntity.isSameDay(dateState.currentDay)) {
                         Color.White
@@ -333,7 +337,7 @@ fun CalendarPagerContent(
                     color = backgroundColor,
                     radius = (perWidthWithPadding - 2 * paddingPx) / 2f,
                     center = Offset(
-                        index * perWidthWithPadding + paddingPx + perWidthWithPadding / 2f,
+                        colIndex * perWidthWithPadding + paddingPx + perWidthWithPadding / 2f,
                         perWidthWithPadding / 2f
                     ),
                 )
@@ -346,7 +350,7 @@ fun CalendarPagerContent(
                         perWidthWithPadding - 2 * paddingPx
                     ),
                     topLeft = Offset(
-                        index * perWidthWithPadding,
+                        colIndex * perWidthWithPadding,
                         perWidthWithPadding * 0.5f
                                 //减去文字的高度
                                 - textSize.height / 2f
@@ -366,7 +370,7 @@ fun CalendarPagerContent(
                         color = Color.White,
                         radius = todayRadius,
                         center = Offset(
-                            index * perWidthWithPadding + perWidthWithPadding * 0.75f + todayRadius,
+                            colIndex * perWidthWithPadding + perWidthWithPadding * 0.75f + todayRadius,
                             todayRadius
                         ),
                     )
@@ -379,7 +383,7 @@ fun CalendarPagerContent(
                             (perWidthWithPadding - 2 * paddingPx) / 4f
                         ),
                         topLeft = Offset(
-                            index * perWidthWithPadding + perWidthWithPadding * 0.75f,
+                            colIndex * perWidthWithPadding + perWidthWithPadding * 0.75f,
                             0f
                         ),
                         style = TextStyle(
@@ -399,6 +403,7 @@ fun CalendarPagerContent(
 fun UpdatePagerState(homeViewModel: DateViewModel, pagerState: PagerState) {
     XLogger.d("================>UpdatePagerState")
     val homeUIState = homeViewModel.dateStateData.collectAsState().value
+    // TODO: 处理pager的状态
 //    val monthOffset = homeUIState.monthEntity.offset
 //    val weekOffset = homeUIState.weekEntity.offset
 //    val offset = if (homeUIState.weekModelFlag) {
@@ -484,7 +489,7 @@ fun YearAndMonth(homeViewModel: DateViewModel, pagerState: PagerState) {
             )
         }) {
             Text(
-                text = "${currentDay.year()}年${currentDay.month() + 1}月${currentDay.day}日",
+                text = "${currentDay.year()}年${currentDay.month()}月${currentDay.day}日",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color.Black,

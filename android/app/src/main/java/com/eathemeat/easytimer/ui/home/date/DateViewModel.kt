@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import com.eathemeat.easytimer.data.NoteInfo
 import com.future.composecalendar.data.DayEntity
 import com.future.composecalendar.data.MonthEntity
+import com.future.composecalendar.data.WEEK
 import com.future.composecalendar.data.WeekEntity
 import com.future.composecalendar.data.YearEntity
 import com.future.composecalendar.utils.XLogger
@@ -17,19 +18,15 @@ import kotlinx.coroutines.flow.update
 import java.util.Calendar
 import kotlin.math.ceil
 
-class YearEntitys :HashMap<Int, YearEntity> {
-    var currentDay: DayEntity
+class YearEntitys() : HashMap<Int, YearEntity>() {
+    lateinit var currentDay: DayEntity
     var weekModelFlag: Boolean = false//周历模式
     // 周历模式上一次滑动的index
     var weekModelLastScrollIndex: Int = 0
     var showYearMonthDialog: Boolean = false
 
-    constructor(calendar: Calendar = Calendar.getInstance()):super() {
-        val currentYear = get(calendar.get(Calendar.YEAR))
-
-        val currentMonth = MonthEntity(currentYear,calendar.get(Calendar.MONTH))
-        val currentWeek = WeekEntity(currentMonth,calendar.get(Calendar.WEEK_OF_MONTH))
-        currentDay = DayEntity(currentWeek,calendar.get(Calendar.DAY_OF_WEEK))
+    init {
+        getYear(Calendar.getInstance().get(Calendar.YEAR))
     }
 
 
@@ -57,14 +54,17 @@ class YearEntitys :HashMap<Int, YearEntity> {
                     MonthEntity(result, month).apply {
                         val daysOfMonth = getMonthDaysCount(year, month)
                         for (day in 1..daysOfMonth) {
-                            calendar.set(Calendar.DAY_OF_WEEK_IN_MONTH, day)
+                            calendar.set(Calendar.DAY_OF_MONTH, day)
                             val dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK)
                             val weekIndex = ceil((firstDay+day-1)/7f).toInt()
-                            if(!weekList.containsKey(weekIndex)) weekList[weekIndex] = WeekEntity(this, month)
+                            if(!weekList.containsKey(weekIndex)) weekList[weekIndex] = WeekEntity(this, weekIndex)
                             weekList[weekIndex]?.also {
-                                it.dayList.put(dayOfWeek, DayEntity(it, day).apply {
+                                it.dayList.put(day, DayEntity(it,day,WEEK.entries[dayOfWeek-1]).apply {
+
                                     if (isToday()) {
                                         color = Color.Red
+                                        currentDay = this
+                                        XLogger.d("currentDay12:$currentDay")
 //                                } else if (day < firstDay) {
 //                                    color = Color.Gray
 //                                } else if (day < (firstDay + day_size)) {
@@ -72,17 +72,21 @@ class YearEntitys :HashMap<Int, YearEntity> {
                                     } else {
                                         color = Color.Gray
                                     }
+                                    if(day == 2) {
+                                        XLogger.d("putDay:$this")
+                                    }
                                 })
                             }
-                            if (month <4 && weekIndex ==1) {
-                                XLogger.d("weekIndex:$weekIndex dayOfWeek:$dayOfWeek week:${weekList[weekIndex]?.week}")
-                                XLogger.d("weekList[$weekIndex]:${weekList[weekIndex]?.dayList?.get(dayOfWeek)}")
-                            }
-
+                        }
+                        if (month <6) {
+                            XLogger.d("week:${weekList[1]?.week}")
+                            XLogger.d("weekList[$1]:${weekList[1]?.dayList}")
                         }
                     }
 
+
             }
+            XLogger.d("currentDay:$currentDay")
             result
         }
     }
@@ -94,7 +98,7 @@ class DateNoteEntitys: HashMap<Calendar, NoteInfo>() {
 
 }
 
-class DateViewModel: ViewModel() {
+class DateViewModel() : ViewModel() {
 
 
     var timeNow by mutableStateOf(Pair<String,String>("1989-11-28","00:00:00"))
@@ -105,6 +109,7 @@ class DateViewModel: ViewModel() {
     var today = Calendar.getInstance()
 
     val dateStateData = _dateStateData.asStateFlow()    //DateScreen data
+
 
     init {
         _dateStateData.value.get(today.get(Calendar.YEAR))
@@ -126,18 +131,18 @@ class DateViewModel: ViewModel() {
                     val weekData =  _dateStateData.value.currentDay
                     XLogger.d("周历 click========>${weekData}")
                     _dateStateData.update {
-                        it.currentDay = it.currentDay.week.month.weekList[action.row]!!.dayList[action.column]!!
+                        it.currentDay = it.currentDay.weekEntity.monthEntity.weekList[action.row]!!.dayList[action.column]!!
                         it
                     }
                 } else {
                     try {
                         //月历的点击事件 通过点击点 找到这一行周历的数据
-                        val week = _dateStateData.value.currentDay.week.month.weekList[action.row]
+                        val week = _dateStateData.value.currentDay.weekEntity.monthEntity.weekList[action.row]
                         val day = week!!.dayList[action.column]!!
                         XLogger.d("月历 week========>${day}")
                         //把这一行 加入到周历的数据中
 
-                        val weekEntity = day.week
+                        val weekEntity = day.weekEntity
 
                         _dateStateData.update {
                             it.currentDay = day
@@ -159,7 +164,7 @@ class DateViewModel: ViewModel() {
 
                     XLogger.d("月历 click========>${clickDay}")
                     //把这一行 加入到周历的数据中
-                    val rowIndex = clickDay.week.week
+                    val rowIndex = clickDay.weekEntity.week
 
                     _dateStateData.update {
                         it.run {
@@ -226,7 +231,7 @@ class DateViewModel: ViewModel() {
         val todayDay = todayCalendar.get(Calendar.DAY_OF_MONTH)
 
         val clickDay = _dateStateData.value.currentDay
-        val clickDayWeek = clickDay.week
+        val clickDayWeek = clickDay.weekEntity
         val weekList: MutableList<DayEntity> = mutableListOf()
 
         if (clickDayWeek.dayList.isNotEmpty()) {
@@ -266,7 +271,7 @@ class DateViewModel: ViewModel() {
                 //如果是从 月历 过来的
                 XLogger.d("月历 click========>${clickDay}")
                 //把这一行 加入到周历的数据中
-                val rowIndex = clickDay.week.week
+                val rowIndex = clickDay.weekEntity.week
             }
         } else {
             XLogger.d("---------------->情况3")

@@ -31,16 +31,16 @@ data class YearEntity(val year: Int = 0,
 }
 
 data class MonthEntity(
-    val year: YearEntity,
+    val yearEntity: YearEntity,
     val month: Int = 0,
     val weekList: MutableMap<Int,WeekEntity> = mutableMapOf(),
 ) {
     fun isSameMonth(other: MonthEntity): Boolean {
-        return month == other.month && year.isSameYear(other.year)
+        return month == other.month && yearEntity.isSameYear(other.yearEntity)
     }
 
     fun isThisMonth(calendar:Calendar = Calendar.getInstance()):Boolean {
-        return calendar.get(Calendar.MONTH) == month &&year.isThisYear(calendar)
+        return calendar.get(Calendar.MONTH)+1 == month &&yearEntity.isThisYear(calendar)
     }
 
     /**
@@ -58,7 +58,7 @@ data class MonthEntity(
             if (bigMonth.contains(month)){//判断大月份
                 31
             }else if (month == 2){//判断平年与闰年
-               if (this@MonthEntity.year.isLeapYear(year)) {
+               if (this@MonthEntity.yearEntity.isLeapYear(year)) {
                     29
                 } else {
                     28
@@ -70,67 +70,72 @@ data class MonthEntity(
     }
 
     override fun toString(): String {
-        return "$year month:$month"
+        return "$yearEntity month:$month"
     }
 }
 
+enum class WEEK  {
+    SUNDAY,MONDAY,TUESDAY,WEDNESDAY,THURSDAY,FRIDAY,SATURDAY
+}
+
 data class WeekEntity(
-    val month: MonthEntity,
+    val monthEntity: MonthEntity,
     val week:Int = 0,
     val dayList: MutableMap<Int,DayEntity> = mutableMapOf(),
 ) {
     fun isSameWeek(other: WeekEntity): Boolean {
-        return week == other.week && month.isSameMonth(other.month)
+        return week == other.week && monthEntity.isSameMonth(other.monthEntity)
     }
 
     fun isThisWeek(calendar:Calendar = Calendar.getInstance()):Boolean {
-        return calendar.get(Calendar.WEEK_OF_MONTH) == week && month.isThisMonth(calendar)
+        return calendar.get(Calendar.WEEK_OF_MONTH) == week && monthEntity.isThisMonth(calendar)
     }
 
     fun isSameMonth(other: DayEntity): Boolean {
-        return month.isSameMonth(other.week.month)
+        return monthEntity.isSameMonth(other.weekEntity.monthEntity)
     }
 
     override fun toString(): String {
-        return "$month week:$week "
+        return "$monthEntity week:$week "
     }
 }
 
 data class DayEntity(
-    val week: WeekEntity,
-    val day: Int = Calendar.DAY_OF_WEEK,
+    val weekEntity: WeekEntity,
+    val day: Int,
+    val week: WEEK,
     var color: Color = Color.Black,
 ) {
     fun isSameDay(other: DayEntity) :Boolean {
-        return  day == other.day && week.isSameWeek(other.week)
+        return  day == other.day && weekEntity.isSameWeek(other.weekEntity)
     }
 
     fun isToday(calendar:Calendar = Calendar.getInstance()) :Boolean {
-        return calendar.get(Calendar.DAY_OF_WEEK) == day && week.isThisWeek(calendar)
+        return calendar.get(Calendar.DAY_OF_MONTH) == day && weekEntity.isThisWeek(calendar)
     }
 
     fun isSameMonth(other: DayEntity): Boolean {
-        return week.month.isSameMonth(other.week.month)
+        return weekEntity.monthEntity.isSameMonth(other.weekEntity.monthEntity)
     }
 
     fun isSameWeek(other: DayEntity): Boolean {
-        return week.isSameWeek(other.week)
+        return weekEntity.isSameWeek(other.weekEntity)
     }
 
     fun isWeekend(): Boolean {
-        return day == 6 || day == 7
+        return week == WEEK.SATURDAY || week == WEEK.SUNDAY
     }
 
     fun year(): Int {
-        return week.month.year.year
+        return weekEntity.monthEntity.yearEntity.year
     }
 
     fun month(): Int {
-        return week.month.month
+        return weekEntity.monthEntity.month
     }
 
     override fun toString(): String {
-        return "$week day:$day color:$color"
+        return "$weekEntity day:$day week:${week.name} color:$color\n"
     }
 }
 

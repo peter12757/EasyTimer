@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.eathemeat.easytimer.R
 import com.future.composecalendar.utils.XLogger
 import kotlinx.coroutines.launch
@@ -47,25 +48,23 @@ import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun YearMonthSelectDialog(viewModel: DateViewModel, pagerState: PagerState) {
+fun YearMonthSelectDialog(viewModel: DateViewModel = viewModel(), pagerState: PagerState) {
     val homeUIState = viewModel.dateStateData.collectAsState().value
 
-    val currentDay = homeUIState.currentDay
-    val currentYear = currentDay.week.month.year.year
 
     if (homeUIState.showYearMonthDialog) {
         val coroutineScope = rememberCoroutineScope()
         val monthArray = integerArrayResource(id = R.array.month)
         val yearList = mutableListOf<Int>().apply {
             for (year in 0..500) {
-                add(year+currentYear-250)
+                add(year+homeUIState.currentDay.year()-250)
             }
         }
 
 
         val listState = rememberLazyListState()
         LaunchedEffect(key1 = Unit, block = {
-            listState.scrollToItem(index = currentYear)
+            listState.scrollToItem(index = homeUIState.currentDay.year())
         })
         val pageState = rememberPagerState(
             initialPage = 0,
@@ -73,11 +72,11 @@ fun YearMonthSelectDialog(viewModel: DateViewModel, pagerState: PagerState) {
         )
 
         var selectMonth by remember {
-            mutableStateOf(currentDay.week.month.month + 1)
+            mutableStateOf(homeUIState.currentDay.year() + 1)
         }
 
         var selectYear by remember {
-            mutableStateOf(currentDay.week.month.year.year)
+            mutableStateOf(homeUIState.currentDay.year())
         }
 
         XLogger.d("------>$selectMonth    $selectYear")
