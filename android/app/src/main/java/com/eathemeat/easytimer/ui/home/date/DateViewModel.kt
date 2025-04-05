@@ -91,6 +91,12 @@ class YearEntitys() : HashMap<Int, YearEntity>() {
         }
     }
 
+    fun setCurrentDay(year: Int, month: Int) {
+        val yearEntity = get(year)
+        val monthEntity = yearEntity.monthList[month]
+        currentDay = monthEntity.getToDayorFirstDay()
+    }
+
 
 }
 
@@ -120,7 +126,7 @@ class DateViewModel() : ViewModel() {
 
         data class SetCalendarModel(val isWeekModel: Boolean, val page: Int) : HomeAction()
 
-        data class UpdateData(val page: Int) : HomeAction()
+        data class UpdateData(val year:Int,val month: Int) : HomeAction()
         data class ShowYearMonthSelectDialog(val show: Boolean) : HomeAction()
     }
 
@@ -204,9 +210,11 @@ class DateViewModel() : ViewModel() {
             is HomeAction.UpdateData -> {
                 if (_dateStateData.value.weekModelFlag) {
                     //周历 更新数据
-                    getWeekData(action.page)
+//                    getWeekData(action.page)
                 } else {
-//                    getMonthData(action.page)
+
+                    _dateStateData.value.setCurrentDay(action.year,action.month)
+
                 }
             }
 

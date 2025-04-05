@@ -72,6 +72,27 @@ data class MonthEntity(
     override fun toString(): String {
         return "$yearEntity month:$month"
     }
+
+    fun getToDayorFirstDay(): DayEntity {
+        val calender = Calendar.getInstance()
+        if (isThisMonth(calender)) {
+            return findDay(calender.get(Calendar.DAY_OF_MONTH))
+        } else {
+            return weekList[0]!!.dayList[0]!!
+        }
+    }
+
+    private fun findDay(day: Int): DayEntity {
+        var result = weekList[0]!!.dayList[0]!!
+        weekList.forEach{ (weekIndex,week) ->
+            week.dayList.forEach { dayIndex, dayEntity ->
+                result = if (dayEntity.isThisDay(day)) dayEntity else result
+            }
+
+
+        }
+        return result
+    }
 }
 
 enum class WEEK  {
@@ -136,6 +157,10 @@ data class DayEntity(
 
     override fun toString(): String {
         return "$weekEntity day:$day week:${week.name} color:$color\n"
+    }
+
+    fun isThisDay(day: Int): Boolean {
+        return this.day == day
     }
 }
 

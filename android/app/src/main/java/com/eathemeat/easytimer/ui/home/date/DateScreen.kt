@@ -1,5 +1,6 @@
 package com.eathemeat.easytimer.ui.home.date
 
+import android.icu.util.Calendar
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -17,7 +18,6 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
@@ -56,12 +56,36 @@ import com.future.composecalendar.utils.XLogger
 import kotlinx.coroutines.launch
 import kotlin.math.ceil
 
+
+class DatePagerState(override val pageCount: Int = 1200, val initPage: Int = 600) :
+    PagerState(currentPage = initPage) {
+    val today = Calendar.getInstance()
+
+
+    fun year() :Int {
+        val toYear = today.get(Calendar.YEAR)
+        val toMonth = today.get(Calendar.MONTH)
+        val offset = currentPage - initPage
+        val offsetYear = toYear+offset/12
+        XLogger.d("offsetYear:$offsetYear")
+        return offsetYear
+    }
+
+    fun month():Int {
+        val toMonth = today.get(Calendar.MONTH)
+        val offset = currentPage - initPage
+        val offsetMonth = toMonth + offset%12
+        XLogger.d("offsetMonth:$offsetMonth")
+        return offsetMonth
+    }
+
+
+}
+
+
 @Composable
 fun DateScreen(homeViewModel: DateViewModel = viewModel()) {
-    val pagerState = rememberPagerState(
-        initialPage = 0,
-        pageCount = { 10000 }
-    )
+    val pagerState = DatePagerState()
 
     YearMonthSelectDialog(viewModel = homeViewModel,pagerState)
     XLogger.d("==================>Calendar")
@@ -131,7 +155,7 @@ fun DateScreen(homeViewModel: DateViewModel = viewModel()) {
 fun CalendarPager(
     homeViewModel: DateViewModel,
     textMeasurerAndTextSize: Pair<TextMeasurer, IntSize>,
-    pagerState: PagerState
+    pagerState: DatePagerState
 ) {
     XLogger.d("CalendarPager==================>")
 
@@ -166,7 +190,7 @@ fun CalendarPagerContent(
     val paddingPx = 2
 
     val screenWidthDp = LocalConfiguration.current.screenWidthDp
-    val clickDay = dateState.currentDay
+    val currentDay = dateState.currentDay
 
     val height = if (dateState.weekModelFlag) {
         (screenWidthDp / 7f).dp
@@ -217,7 +241,7 @@ fun CalendarPagerContent(
 
         if (!dateState.weekModelFlag) {
             XLogger.d("月历模式")
-            clickDay.weekEntity.monthEntity.weekList.forEach { (weekIndex, weekData) ->
+            currentDay.weekEntity.monthEntity.weekList.forEach { (weekIndex, weekData) ->
                 weekData.dayList.forEach { (dayIndex, dayEntity) ->
                     XLogger.d("每日的数据 ${dayEntity}")
                     val colIndex = (dayIndex+1)%7
@@ -309,7 +333,7 @@ fun CalendarPagerContent(
         } else {
             XLogger.d("周历模式")
 
-            clickDay.weekEntity.dayList.forEach { (index, dayEntity) ->
+            currentDay.weekEntity.dayList.forEach { (index, dayEntity) ->
                 //一行 当前的日期
                 val colIndex = index +1
                 XLogger.d("每日的数据 ${dayEntity}")
@@ -400,31 +424,22 @@ fun CalendarPagerContent(
 }
 
 @Composable
-fun UpdatePagerState(homeViewModel: DateViewModel, pagerState: PagerState) {
-    XLogger.d("================>UpdatePagerState")
-    val homeUIState = homeViewModel.dateStateData.collectAsState().value
+fun UpdatePagerState(homeViewModel: DateViewModel, pagerState: DatePagerState) {
+    XLogger.d("================>UpdatePagerState :${pagerState.currentPage}  ${pagerState.pageCount}")
     // TODO: 处理pager的状态
-//    val monthOffset = homeUIState.monthEntity.offset
-//    val weekOffset = homeUIState.weekEntity.offset
-//    val offset = if (homeUIState.weekModelFlag) {
-//        weekOffset
-//    } else {
-//        monthOffset
-//    }
-//
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             XLogger.d("snapshotFlow============>$page")
-            homeViewModel.dispatch(DateViewModel.HomeAction.UpdateData(page))
+            pagerState.year()
+            homeViewModel.dispatch(DateViewModel.HomeAction.UpdateData(pagerState.year(),pagerState.month()))
         }
     }
-//
-//    LaunchedEffect(key1 = homeUIState.needScrollPage, block = {
-//        XLogger.d("滑动到：${homeUIState.needScrollPage}页")
-//        if (homeUIState.needScrollPage >= 0 && homeUIState.needScrollPage != offset) {
-//            pagerState.scrollToPage(homeUIState.needScrollPage)
-//        }
-//    })
+    LaunchedEffect(key1 = pagerState.currentPage, block = {
+        XLogger.d("滑动到：${pagerState.currentPage}页")
+        if (pagerState.currentPage >= 0) {
+            pagerState.scrollToPage(pagerState.currentPage)
+        }
+    })
 }
 /**
  * 星期信息
@@ -471,7 +486,9 @@ fun YearAndMonth(homeViewModel: DateViewModel, pagerState: PagerState) {
         IconButton(modifier = Modifier.padding(start = 20.dp), onClick = {
             if (pagerState.currentPage - 1 >= 0) {
                 coroutineScope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                    val page = pagerState.currentPage - 1
+                    XLogger.d("${page}")
+                    pagerState.animateScrollToPage(page)
                 }
             }
         }) {
@@ -500,7 +517,9 @@ fun YearAndMonth(homeViewModel: DateViewModel, pagerState: PagerState) {
         IconButton(modifier = Modifier.padding(end = 20.dp), onClick = {
             if (pagerState.currentPage + 1 < 10000) {
                 coroutineScope.launch {
-                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                    val page = pagerState.currentPage + 1
+                    XLogger.d("${page}")
+                    pagerState.animateScrollToPage(page)
                 }
             }
         }) {

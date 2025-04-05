@@ -56,8 +56,8 @@ fun YearMonthSelectDialog(viewModel: DateViewModel = viewModel(), pagerState: Pa
         val coroutineScope = rememberCoroutineScope()
         val monthArray = integerArrayResource(id = R.array.month)
         val yearList = mutableListOf<Int>().apply {
-            for (year in 0..500) {
-                add(year+homeUIState.currentDay.year()-250)
+            for (year in 0..200) {
+                add(year+homeUIState.currentDay.year()-100)
             }
         }
 
@@ -66,13 +66,13 @@ fun YearMonthSelectDialog(viewModel: DateViewModel = viewModel(), pagerState: Pa
         LaunchedEffect(key1 = Unit, block = {
             listState.scrollToItem(index = homeUIState.currentDay.year())
         })
-        val pageState = rememberPagerState(
+        val dialogPagerState = rememberPagerState(
             initialPage = 0,
             pageCount = { 2 },
         )
 
         var selectMonth by remember {
-            mutableStateOf(homeUIState.currentDay.year() + 1)
+            mutableStateOf(homeUIState.currentDay.month())
         }
 
         var selectYear by remember {
@@ -115,7 +115,7 @@ fun YearMonthSelectDialog(viewModel: DateViewModel = viewModel(), pagerState: Pa
                             .padding(4.dp)
                             .clickable {
                                 coroutineScope.launch {
-                                    pageState.scrollToPage(0)
+                                    dialogPagerState.scrollToPage(0)
                                 }
                             },
                         text = "${selectYear}年",
@@ -127,7 +127,7 @@ fun YearMonthSelectDialog(viewModel: DateViewModel = viewModel(), pagerState: Pa
                             .padding(4.dp)
                             .clickable {
                                 coroutineScope.launch {
-                                    pageState.scrollToPage(1)
+                                    dialogPagerState.scrollToPage(1)
                                 }
                             },
                         text = "${selectMonth}月",
@@ -140,7 +140,7 @@ fun YearMonthSelectDialog(viewModel: DateViewModel = viewModel(), pagerState: Pa
                     modifier = Modifier
                         .fillMaxWidth(),
 //                    pageCount = 2,
-                    state = pageState
+                    state = dialogPagerState
                 ) { page ->
                     if (page == 0) {
                         LazyRow(modifier = Modifier
