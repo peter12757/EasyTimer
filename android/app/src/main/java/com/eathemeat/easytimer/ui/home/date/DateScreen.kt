@@ -29,6 +29,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -64,7 +65,7 @@ class DatePagerState(override val pageCount: Int = 1200, val initPage: Int = 600
 
     fun year() :Int {
         val toYear = today.get(Calendar.YEAR)
-        val toMonth = today.get(Calendar.MONTH)
+        val toMonth = today.get(Calendar.MONTH)+1
         val offset = currentPage - initPage
         val offsetYear = toYear+offset/12
         XLogger.d("offsetYear:$offsetYear")
@@ -72,9 +73,9 @@ class DatePagerState(override val pageCount: Int = 1200, val initPage: Int = 600
     }
 
     fun month():Int {
-        val toMonth = today.get(Calendar.MONTH)
+        val toMonth = today.get(Calendar.MONTH)+1
         val offset = currentPage - initPage
-        val offsetMonth = toMonth + offset%12
+        val offsetMonth = ceil(toMonth.toFloat() + offset%12).toInt()
         XLogger.d("offsetMonth:$offsetMonth")
         return offsetMonth
     }
@@ -471,9 +472,9 @@ fun WeekRow() {
 @Composable
 fun YearAndMonth(homeViewModel: DateViewModel, pagerState: PagerState) {
     val coroutineScope = rememberCoroutineScope()
-    val homeUiState =
-        homeViewModel.dateStateData.collectAsState()
-    val currentDay = homeUiState.value.currentDay
+    val dateState =
+        homeViewModel.dateStateData.collectAsState().value
+    val currentDay = remember { dateState.currentDay }
     XLogger.d("YearAndMonth=======================>${currentDay}")
     //TODO：点击回到  年月日
     Row(

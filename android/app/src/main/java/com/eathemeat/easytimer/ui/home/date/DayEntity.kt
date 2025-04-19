@@ -78,12 +78,12 @@ data class MonthEntity(
         if (isThisMonth(calender)) {
             return findDay(calender.get(Calendar.DAY_OF_MONTH))
         } else {
-            return weekList[0]!!.dayList[0]!!
+            return weekList[1]!!.dayList[1]!!
         }
     }
 
     private fun findDay(day: Int): DayEntity {
-        var result = weekList[0]!!.dayList[0]!!
+        var result = weekList[1]!!.dayList[1]!!
         weekList.forEach{ (weekIndex,week) ->
             week.dayList.forEach { dayIndex, dayEntity ->
                 result = if (dayEntity.isThisDay(day)) dayEntity else result

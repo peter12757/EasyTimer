@@ -92,8 +92,9 @@ class YearEntitys() : HashMap<Int, YearEntity>() {
     }
 
     fun setCurrentDay(year: Int, month: Int) {
+        XLogger.d("year:$year  month:$month")
         val yearEntity = get(year)
-        val monthEntity = yearEntity.monthList[month]
+        val monthEntity = yearEntity.monthList[month]!!
         currentDay = monthEntity.getToDayorFirstDay()
     }
 
@@ -133,78 +134,10 @@ class DateViewModel() : ViewModel() {
     fun dispatch(action: HomeAction) {
         when (action) {
             is HomeAction.ItemClick -> {
-                if (_dateStateData.value.weekModelFlag) {
-                    val weekData =  _dateStateData.value.currentDay
-                    XLogger.d("周历 click========>${weekData}")
-                    _dateStateData.update {
-                        it.currentDay = it.currentDay.weekEntity.monthEntity.weekList[action.row]!!.dayList[action.column]!!
-                        it
-                    }
-                } else {
-                    try {
-                        //月历的点击事件 通过点击点 找到这一行周历的数据
-                        val week = _dateStateData.value.currentDay.weekEntity.monthEntity.weekList[action.row]
-                        val day = week!!.dayList[action.column]!!
-                        XLogger.d("月历 week========>${day}")
-                        //把这一行 加入到周历的数据中
-
-                        val weekEntity = day.weekEntity
-
-                        _dateStateData.update {
-                            it.currentDay = day
-                            it
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
+                onItemClick(action)
             }
-
             is HomeAction.SetCalendarModel -> {
-                //无效切换
-                if (_dateStateData.value.weekModelFlag == action.isWeekModel) return
-
-                if (action.isWeekModel) {
-                    //通过月历的点击 click Day 找到周历
-                    val clickDay = _dateStateData.value.currentDay
-
-                    XLogger.d("月历 click========>${clickDay}")
-                    //把这一行 加入到周历的数据中
-                    val rowIndex = clickDay.weekEntity.week
-
-                    _dateStateData.update {
-                        it.run {
-                            weekModelFlag = true
-                            weekModelLastScrollIndex = action.page
-                            it
-                        }
-
-                    }
-                } else {
-                    //通过周历的click day 找到月历
-                    val clickDay = _dateStateData.value.currentDay
-                    XLogger.d("++++++++++++++>${clickDay}")
-
-                    XLogger.d("查找月历：${clickDay.year()}-${clickDay.month() + 1}-${clickDay.day}")
-
-
-                    //月份的跨度
-                    val yearDiff: Int = clickDay.year() - today.get(Calendar.YEAR)
-                    val monthDiff: Int = clickDay.month() - today.get(Calendar.MONTH)
-                    val totalMonthDiff = yearDiff * 12 + monthDiff
-
-                    _dateStateData.update {
-                        it.run {
-                            weekModelFlag = false
-                            weekModelLastScrollIndex = action.page
-                            it
-                        }
-                    }
-
-                    // val offset = currentPage - 5000
-                    XLogger.d("totalMonthDiff=============>${totalMonthDiff + 5000}")
-//                    getMonthData(totalMonthDiff + 5000, true)
-                }
+                onSetCalendarModel(action)
             }
 
             is HomeAction.UpdateData -> {
@@ -212,19 +145,96 @@ class DateViewModel() : ViewModel() {
                     //周历 更新数据
 //                    getWeekData(action.page)
                 } else {
-
-                    _dateStateData.value.setCurrentDay(action.year,action.month)
+                    _dateStateData.update {
+                        it.setCurrentDay(action.year,action.month)
+                        it
+                    }
 
                 }
             }
 
             is HomeAction.ShowYearMonthSelectDialog -> {
                 _dateStateData.update {
-                    it.run {
-                        showYearMonthDialog = action.show
+                        it.showYearMonthDialog = action.show
                         it
-                    }
                 }
+            }
+        }
+    }
+
+    private fun onSetCalendarModel(action: HomeAction.SetCalendarModel) {
+        //无效切换
+        if (_dateStateData.value.weekModelFlag == action.isWeekModel) return
+
+        if (action.isWeekModel) {
+            //通过月历的点击 click Day 找到周历
+            val clickDay = _dateStateData.value.currentDay
+
+            XLogger.d("月历 click========>${clickDay}")
+            //把这一行 加入到周历的数据中
+            val rowIndex = clickDay.weekEntity.week
+
+            _dateStateData.update {
+                it.run {
+                    weekModelFlag = true
+                    weekModelLastScrollIndex = action.page
+                    it
+                }
+
+            }
+        } else {
+            //通过周历的click day 找到月历
+            val clickDay = _dateStateData.value.currentDay
+            XLogger.d("++++++++++++++>${clickDay}")
+
+            XLogger.d("查找月历：${clickDay.year()}-${clickDay.month() + 1}-${clickDay.day}")
+
+
+            //月份的跨度
+            val yearDiff: Int = clickDay.year() - today.get(Calendar.YEAR)
+            val monthDiff: Int = clickDay.month() - today.get(Calendar.MONTH)
+            val totalMonthDiff = yearDiff * 12 + monthDiff
+
+            _dateStateData.update {
+                it.run {
+                    weekModelFlag = false
+                    weekModelLastScrollIndex = action.page
+                    it
+                }
+            }
+
+            // val offset = currentPage - 5000
+            XLogger.d("totalMonthDiff=============>${totalMonthDiff + 5000}")
+    //                    getMonthData(totalMonthDiff + 5000, true)
+        }
+    }
+
+    private fun onItemClick(action: HomeAction.ItemClick) {
+        if (_dateStateData.value.weekModelFlag) {
+            val weekData = _dateStateData.value.currentDay
+            XLogger.d("周历 click========>${weekData}")
+            _dateStateData.update {
+                it.currentDay =
+                    it.currentDay.weekEntity.monthEntity.weekList[action.row]!!.dayList[action.column]!!
+                it
+            }
+        } else {
+            try {
+                //月历的点击事件 通过点击点 找到这一行周历的数据
+                val week =
+                    _dateStateData.value.currentDay.weekEntity.monthEntity.weekList[action.row]
+                val day = week!!.dayList[action.column]!!
+                XLogger.d("月历 week========>${day}")
+                //把这一行 加入到周历的数据中
+
+                val weekEntity = day.weekEntity
+
+                _dateStateData.update {
+                    it.currentDay = day
+                    it
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
