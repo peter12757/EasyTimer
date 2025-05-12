@@ -49,22 +49,22 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun YearMonthSelectDialog(viewModel: DateViewModel = viewModel(), pagerState: PagerState) {
-    val homeUIState = viewModel.dateStateData.collectAsState().value
+    val dateStateData = viewModel.dateStateData.collectAsState()
 
 
-    if (homeUIState.showYearMonthDialog) {
+    if (dateStateData.value.showYearMonthDialog) {
         val coroutineScope = rememberCoroutineScope()
         val monthArray = integerArrayResource(id = R.array.month)
         val yearList = mutableListOf<Int>().apply {
             for (year in 0..200) {
-                add(year+homeUIState.currentDay.year()-100)
+                add(year+dateStateData.value.currentDay.year()-100)
             }
         }
 
 
         val listState = rememberLazyListState()
         LaunchedEffect(key1 = Unit, block = {
-            listState.scrollToItem(index = homeUIState.currentDay.year())
+            listState.scrollToItem(index = dateStateData.value.currentDay.year())
         })
         val dialogPagerState = rememberPagerState(
             initialPage = 0,
@@ -72,11 +72,11 @@ fun YearMonthSelectDialog(viewModel: DateViewModel = viewModel(), pagerState: Pa
         )
 
         var selectMonth by remember {
-            mutableStateOf(homeUIState.currentDay.month())
+            mutableStateOf(dateStateData.value.currentDay.month())
         }
 
         var selectYear by remember {
-            mutableStateOf(homeUIState.currentDay.year())
+            mutableStateOf(dateStateData.value.currentDay.year())
         }
 
         XLogger.d("------>$selectMonth    $selectYear")

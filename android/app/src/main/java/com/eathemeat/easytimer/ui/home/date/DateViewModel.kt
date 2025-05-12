@@ -145,11 +145,8 @@ class DateViewModel() : ViewModel() {
                     //周历 更新数据
 //                    getWeekData(action.page)
                 } else {
-                    _dateStateData.update {
-                        it.setCurrentDay(action.year,action.month)
-                        it
-                    }
-
+                    _dateStateData.value.setCurrentDay(action.year,action.month)
+                    _dateStateData.tryEmit(_dateStateData.value)
                 }
             }
 

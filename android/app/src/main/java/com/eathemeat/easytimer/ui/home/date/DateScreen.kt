@@ -27,11 +27,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -87,7 +85,6 @@ class DatePagerState(override val pageCount: Int = 1200, val initPage: Int = 600
 @Composable
 fun DateScreen(homeViewModel: DateViewModel = viewModel()) {
     val pagerState = DatePagerState()
-
     YearMonthSelectDialog(viewModel = homeViewModel,pagerState)
     XLogger.d("==================>Calendar")
     LazyColumn(
@@ -184,19 +181,20 @@ fun CalendarPagerContent(
     textMeasurerAndTextSize: Pair<TextMeasurer, IntSize>,
     page: Int,
 ) {
-    XLogger.d("CalendarContent======>")
+    XLogger.d("CalendarContent======>$page")
 
-    val dateState = homeViewModel.dateStateData.collectAsState().value
+    val dateState = homeViewModel.dateStateData.collectAsState()
+    XLogger.d("currentDay==${dateState.value.currentDay}")
     val (textMeasurer, textSize) = textMeasurerAndTextSize
     val paddingPx = 2
 
     val screenWidthDp = LocalConfiguration.current.screenWidthDp
-    val currentDay = dateState.currentDay
+    val currentDay = dateState.value.currentDay
 
-    val height = if (dateState.weekModelFlag) {
+    val height = if (dateState.value.weekModelFlag) {
         (screenWidthDp / 7f).dp
     } else {
-        (dateState.currentDay.weekEntity.monthEntity.weekList.size  * (screenWidthDp / 7f)).dp
+        (dateState.value.currentDay.weekEntity.monthEntity.weekList.size  * (screenWidthDp / 7f)).dp
     }
 
     Canvas(modifier = Modifier
@@ -240,24 +238,24 @@ fun CalendarPagerContent(
         }, onDraw = {
         val perWidthWithPadding = this.size.width / 7f
 
-        if (!dateState.weekModelFlag) {
+        if (!dateState.value.weekModelFlag) {
             XLogger.d("月历模式")
             currentDay.weekEntity.monthEntity.weekList.forEach { (weekIndex, weekData) ->
                 weekData.dayList.forEach { (dayIndex, dayEntity) ->
                     XLogger.d("每日的数据 ${dayEntity}")
-                    val colIndex = (dayIndex+1)%7
+                    val colIndex = dayEntity.week.ordinal
                     val rowIndex = weekIndex -1
-                    XLogger.d("colIndex:$colIndex  rowIndex:$rowIndex")
+                    XLogger.d("colIndex:$colIndex week.ordinal:${dayEntity.week.ordinal}  weekIndex:$weekIndex rowIndex:$rowIndex  ")
                     val textColor =
-                        if (dayEntity.isSameDay(dateState.currentDay)) {
+                        if (dayEntity.isSameDay(dateState.value.currentDay)) {
                             Color.White
-                        } else if (dayEntity.isWeekend() && dayEntity.isSameMonth(dateState.currentDay)) {
+                        } else if (dayEntity.isWeekend() && dayEntity.isSameMonth(dateState.value.currentDay)) {
                             Color.Red
                         } else {
                             dayEntity.color
                         }
                     val backgroundColor: Color =
-                        if (dayEntity.isSameDay(dateState.currentDay)) {
+                        if (dayEntity.isSameDay(dateState.value.currentDay)) {
                             //点击的画圆背景
                             Color.Blue.copy(0.5f)
                         } else if (dayEntity.isToday()) {
@@ -339,16 +337,16 @@ fun CalendarPagerContent(
                 val colIndex = index +1
                 XLogger.d("每日的数据 ${dayEntity}")
                 val textColor =
-                    if (dayEntity.isSameDay(dateState.currentDay)) {
+                    if (dayEntity.isSameDay(dateState.value.currentDay)) {
                         Color.White
-                    } else if (dayEntity.isWeekend() && dayEntity.isSameMonth(dateState.currentDay)) {
+                    } else if (dayEntity.isWeekend() && dayEntity.isSameMonth(dateState.value.currentDay)) {
                         Color.Red
                     } else {
                         dayEntity.color
                     }
 
                 val backgroundColor: Color =
-                    if (dayEntity.isSameDay(dateState.currentDay)) {
+                    if (dayEntity.isSameDay(dateState.value.currentDay)) {
                         //点击的画圆背景
                         Color.Blue.copy(0.5f)
                     } else if (dayEntity.isToday()) {
@@ -428,19 +426,19 @@ fun CalendarPagerContent(
 fun UpdatePagerState(homeViewModel: DateViewModel, pagerState: DatePagerState) {
     XLogger.d("================>UpdatePagerState :${pagerState.currentPage}  ${pagerState.pageCount}")
     // TODO: 处理pager的状态
-    LaunchedEffect(pagerState) {
-        snapshotFlow { pagerState.currentPage }.collect { page ->
-            XLogger.d("snapshotFlow============>$page")
-            pagerState.year()
-            homeViewModel.dispatch(DateViewModel.HomeAction.UpdateData(pagerState.year(),pagerState.month()))
-        }
-    }
-    LaunchedEffect(key1 = pagerState.currentPage, block = {
-        XLogger.d("滑动到：${pagerState.currentPage}页")
-        if (pagerState.currentPage >= 0) {
-            pagerState.scrollToPage(pagerState.currentPage)
-        }
-    })
+//    LaunchedEffect(pagerState) {
+//        snapshotFlow { pagerState.currentPage }.collect { page ->
+//            XLogger.d("snapshotFlow============>$page")
+//            pagerState.year()
+//            homeViewModel.dispatch(DateViewModel.HomeAction.UpdateData(pagerState.year(),pagerState.month()))
+//        }
+//    }
+//    LaunchedEffect(key1 = pagerState.currentPage, block = {
+//        XLogger.d("滑动到：${pagerState.currentPage}页")
+//        if (pagerState.currentPage >= 0) {
+//            pagerState.scrollToPage(pagerState.currentPage)
+//        }
+//    })
 }
 /**
  * 星期信息
